@@ -1,0 +1,16 @@
+﻿global using System;
+global using AutoMapper;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading.Tasks;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.ChangeTracking;
+global using TimeTracker.Domain.Model;
+global using TimeTracker.Domain.Persistence;
+global using TimeTracker.Common;
+global using TimeTracker.Contract.Dtos;
+global using TimeTracker.Contract.Requests.Activities;
+global using TimeTracker.Contract.Requests.Trackings;
+global using TimeTracker.Contract.Notifications.Activities;
+global using TimeTracker.Contract.Notifications.Trackings;
+global using MediatR;
