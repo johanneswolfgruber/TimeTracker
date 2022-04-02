@@ -7,12 +7,15 @@ public class ActivitiesViewModel : BindableBase
     private string? _activityName;
     private ActivityViewModel? _selectedActivity;
 
-    public ActivitiesViewModel(IMediator mediator, IRegionManager regionManager)
+    public ActivitiesViewModel(IMediator mediator, IRegionManager regionManager, IEventAggregator eventAggregator)
     {
         _mediator = mediator;
         _regionManager = regionManager;
+
         CreateActivityCommand = new DelegateCommand(async () => await OnCreateActivityAsync(), CanCreateActivity);
 
+        eventAggregator.GetEvent<ActivityCreatedOrUpdatedEvent>().Subscribe(OnActivityCreatedOrUpdated);
+        eventAggregator.GetEvent<ActivityDeletedEvent>().Subscribe(OnActivityDeleted);
         Initialize().Wait();
     }
 
@@ -63,18 +66,29 @@ public class ActivitiesViewModel : BindableBase
 
     private async Task Initialize()
     {
+        Activities.Clear();
         var response = await _mediator.Send(new GetAllActivitiesRequest());
         Activities.AddRange(response.Activities.Select(Create));
     }
 
     private ActivityViewModel Create(ActivityDto activity)
     {
-        return new ActivityViewModel(activity, OnStartTrackingAsync);
+        return new ActivityViewModel(_mediator, activity);
     }
 
-    private async Task<TrackingDto> OnStartTrackingAsync(Guid id)
+    private void OnActivityCreatedOrUpdated(ActivityCreatedOrUpdated notification)
     {
-        var response = await _mediator.Send(new StartTrackingRequest(id));
-        return response.Tracking;
+    }
+
+    private void OnActivityDeleted(ActivityDeleted notification)
+    {
+        var activityToRemove = Activities.FirstOrDefault(x => x.Id == notification.ActivityId);
+        if (activityToRemove is null)
+        {
+            return;
+        }
+        
+        Activities.Remove(activityToRemove);
+        SelectedActivity = Activities.FirstOrDefault();
     }
 }

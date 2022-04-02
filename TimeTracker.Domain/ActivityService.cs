@@ -48,6 +48,8 @@ public class ActivityService : IActivityService
         var entry = context.Activities.Remove(activity);
         await context.SaveChangesAsync(cancellationToken);
 
+        await _mediator.Publish(new ActivityDeleted(request.ActivityId), cancellationToken);
+
         return new DeleteActivityResponse(entry is not null);
     }
 

@@ -2,24 +2,25 @@
 
 public class ActivityViewModel : BindableBase
 {
-    private readonly Func<Guid, Task<TrackingDto>> _startTrackingCallback;
+    private readonly IMediator _mediator;
     private string _name = string.Empty;
 
-    public ActivityViewModel(ActivityDto activity, Func<Guid, Task<TrackingDto>> startTrackingCallback)
+    public ActivityViewModel(IMediator mediator, ActivityDto activity)
     {
-        _startTrackingCallback = startTrackingCallback;
+        _mediator = mediator;
 
         Id = activity.Id;
         Name = activity.Name;
 
         StartTrackingCommand = new DelegateCommand(async () => await OnStartTrackingAsync());
+        DeleteActivityCommand = new DelegateCommand(async () => await OnDeleteActivityAsync());
     }
 
     public Guid Id { get; }
 
     public DelegateCommand StartTrackingCommand { get; }
-
-    public ObservableCollection<TrackingDto> Trackings { get; } = new();
+    
+    public DelegateCommand DeleteActivityCommand { get; }
 
     public string Name 
     { 
@@ -29,7 +30,11 @@ public class ActivityViewModel : BindableBase
 
     private async Task OnStartTrackingAsync()
     {
-        var tracking = await _startTrackingCallback(Id);
-        Trackings.Add(tracking);
+        _ = await _mediator.Send(new StartTrackingRequest(Id));
+    }
+    
+    private async Task OnDeleteActivityAsync()
+    {
+        _ = await _mediator.Send(new DeleteActivityRequest(Id));
     }
 }

@@ -1,10 +1,8 @@
 ﻿global using System;
-global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
-global using System.ComponentModel;
 global using System.Globalization;
 global using System.Linq;
-global using System.Text;
+global using System.Threading;
 global using System.Threading.Tasks;
 global using System.Windows;
 global using System.Windows.Data;
@@ -13,6 +11,7 @@ global using Prism.Ioc;
 global using Prism.DryIoc;
 global using DryIoc;
 global using Prism.Commands;
+global using Prism.Events;
 global using Prism.Modularity;
 global using TimeTracker.Common;
 global using TimeTracker.Domain;
@@ -20,15 +19,15 @@ global using TimeTracker.Contract.Dtos;
 global using TimeTracker.WPF.Views;
 global using AutoMapper;
 global using MediatR;
-global using MediatR.Pipeline;
 global using Prism.Regions;
 global using TimeTracker.Domain.Model;
 global using TimeTracker.Domain.Persistence;
 global using TimeTracker.Persistence;
-global using TimeTracker.WPF.ViewModels;
 global using TimeTracker.Contract.Requests.Activities;
 global using TimeTracker.Contract.Requests.Trackings;
 global using TimeTracker.Contract.Notifications.Activities;
 global using TimeTracker.Contract.Notifications.Trackings;
+global using TimeTracker.WPF.Notifications;
+global using TimeTracker.WPF.Notifications.Events;
 
 

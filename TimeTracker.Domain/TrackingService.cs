@@ -59,6 +59,11 @@ public class TrackingService : ITrackingService
             throw new InvalidOperationException("Tracking not found");
         }
 
+        if (tracking.EndTime.HasValue)
+        {
+            throw new InvalidOperationException("Tracking was already stopped");
+        }
+
         tracking.EndTime = _dateTimeProvider.UtcNow;
 
         context.Entry(tracking).State = EntityState.Modified;
@@ -84,6 +89,8 @@ public class TrackingService : ITrackingService
         var entry = context.Trackings.Remove(tracking);
 
         await context.SaveChangesAsync(cancellationToken);
+
+        await _mediator.Publish(new TrackingDeleted(request.TrackingId), cancellationToken);
 
         return new DeleteTrackingResponse(entry is not null);
     }

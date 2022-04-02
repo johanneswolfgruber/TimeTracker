@@ -16,7 +16,12 @@ public class WPFModule : IModule
     {
         var container = containerRegistry.GetContainer();
         container.RegisterDelegate<ServiceFactory>(r => r.Resolve);
-        container.RegisterMany(new[] { typeof(IMediator).GetAssembly(), typeof(IActivityService).GetAssembly() }, Registrator.Interfaces);
+        container.RegisterMany(new[] 
+        { 
+            typeof(IMediator).GetAssembly(), 
+            typeof(IActivityService).GetAssembly() ,
+            typeof(NotificationHandler).GetAssembly()
+        }, Registrator.Interfaces);
         
         var mapper = CreateMappings();
         
