@@ -1,15 +1,20 @@
-﻿namespace TimeTracker.WPF.ViewModels;
+﻿using System.Windows.Threading;
+
+namespace TimeTracker.WPF.ViewModels;
 
 public class CalendarDetailsViewModel : BindableBase, INavigationAware
 {
     private readonly IMediator _mediator;
     private readonly IEventAggregator _eventAggregator;
-    private Guid? _trackingId;
-    private string _date = string.Empty;
-    private string _startTime = string.Empty;
-    private string? _endTime;
+    private TrackingDto? _tracking;
+    private DateTime? _startDate;
+    private DateTime? _startTime;
+    private DateTime? _endDate;
+    private DateTime? _endTime;
     private string _duration = string.Empty;
     private string? _notes = string.Empty;
+    private DispatcherTimer? _timer;
+    private bool _isUserUpdate;
 
     public CalendarDetailsViewModel(IMediator mediator, IEventAggregator eventAggregator)
     {
@@ -21,19 +26,25 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     
     public DelegateCommand StopTrackingCommand { get; }
     
-    public string Date
+    public DateTime? StartDate
     {
-        get => _date;
-        set => SetProperty(ref _date, value);
+        get => _startDate;
+        set => SetProperty(ref _startDate, value);
     }
 
-    public string StartTime
+    public DateTime? StartTime
     {
         get => _startTime;
         set => SetProperty(ref _startTime, value);
     }
 
-    public string? EndTime
+    public DateTime? EndDate
+    {
+        get => _endDate;
+        set => SetProperty(ref _endDate, value);
+    }
+
+    public DateTime? EndTime
     {
         get => _endTime;
         set
@@ -46,21 +57,27 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     public string Duration
     {
         get => _duration;
-        set => SetProperty(ref _duration, value);
+        private set => SetProperty(ref _duration, value);
     }
-    
+
     public string? Notes
     {
         get => _notes;
         set => SetProperty(ref _notes, value);
     }
-    
+
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
         _eventAggregator.GetEvent<TrackingCreatedOrUpdatedEvent>().Subscribe(OnTrackingCreatedOrUpdated);
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Subscribe(OnTrackingDeleted);
-        _trackingId = navigationContext.Parameters.GetValue<Guid>("ID");
-        Initialize().Wait();
+        
+        var trackingId = navigationContext.Parameters.GetValue<Guid>("ID");
+        
+        Initialize(trackingId).Wait();
+
+        PropertyChanged += OnPropertyChanged;
+
+        StartTimer();
     }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -72,31 +89,31 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     {
         _eventAggregator.GetEvent<TrackingCreatedOrUpdatedEvent>().Unsubscribe(OnTrackingCreatedOrUpdated);
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Unsubscribe(OnTrackingDeleted);
+        
+        PropertyChanged -= OnPropertyChanged;
+        
+        StopTimer();
     }
 
-    private async Task Initialize()
+    private async Task Initialize(Guid? trackingId)
     {
-        if (_trackingId is null)
+        if (trackingId is null)
         {
             return;
         }
 
-        var response = await _mediator.Send(new GetTrackingRequest(_trackingId.Value));
+        var response = await _mediator.Send(new GetTrackingRequest(trackingId.Value));
         if (response.Tracking is null)
         {
             return;
         }
-        
-        Date = $"{DateOnly.FromDateTime(response.Tracking.StartTime.ToLocalTime()):dd\\.MM\\.yy}";
-        StartTime = $"{response.Tracking.StartTime.ToLocalTime():hh\\:mm}";
-        EndTime = response.Tracking.EndTime is null ? string.Empty : $"{response.Tracking.EndTime.Value.ToLocalTime():hh\\:mm}";
-        Duration = $"{response.Tracking.Duration:hh\\:mm\\:ss}";
-        Notes = response.Tracking.Notes;
+
+        Update(response.Tracking);
     }
-    
+
     private void OnTrackingCreatedOrUpdated(TrackingCreatedOrUpdated notification)
     {
-        if (notification.Tracking.Id != _trackingId)
+        if (notification.Tracking.Id != _tracking?.Id)
         {
             return;
         }
@@ -106,35 +123,146 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
 
     private void OnTrackingDeleted(TrackingDeleted notification)
     {
-        if (notification.TrackingId != _trackingId)
+        if (notification.TrackingId != _tracking?.Id)
         {
             return;
         }
 
-        Date = string.Empty;
-        StartTime = string.Empty;
-        EndTime = string.Empty;
+        _tracking = null;
+        StartDate = null;
+        StartTime = null;
+        EndDate = null;
+        EndTime = null;
         Duration = string.Empty;
+        Notes = string.Empty;
     }
-    
+
     private async Task OnStopTrackingAsync()
     {
-        if (_trackingId is null)
+        if (_tracking is null)
         {
             return;
         }
         
-        await _mediator.Send(new StopTrackingRequest(_trackingId.Value));
+        await _mediator.Send(new StopTrackingRequest(_tracking.Id));
+        StopTimer();
     }
 
-    private bool CanStopTracking() => string.IsNullOrEmpty(EndTime);
-    
+    private bool CanStopTracking() => EndTime is null;
+
     private void Update(TrackingDto tracking)
     {
-        Date = $"{DateOnly.FromDateTime(tracking.StartTime.ToLocalTime()):dd\\.MM\\.yy}";
-        StartTime = $"{tracking.StartTime.ToLocalTime():hh\\:mm}";
-        EndTime = tracking.EndTime is null ? string.Empty : $"{tracking.EndTime.Value.ToLocalTime():hh\\:mm}";
-        Duration = $"{tracking.Duration:hh\\:mm\\:ss}";
+        _tracking = tracking;
+        
+        Duration = tracking.EndTime is null 
+            ? $"{(int)(DateTime.UtcNow - _tracking.StartTime).TotalHours:d2}:" +
+              $"{(DateTime.UtcNow - _tracking.StartTime).Minutes:d2}:" +
+              $"{(DateTime.UtcNow - _tracking.StartTime).Seconds:d2}" 
+            : $"{(int)tracking.Duration.TotalHours:d2}:" +
+              $"{tracking.Duration.Minutes:d2}:" +
+              $"{tracking.Duration.Seconds:d2}";
+        
+        if (_isUserUpdate)
+        {
+            return;
+        }
+
+        StartDate = tracking.StartTime.ToLocalTime();
+        StartTime = tracking.StartTime.ToLocalTime();
+        EndDate = tracking.EndTime?.ToLocalTime();
+        EndTime = tracking.EndTime?.ToLocalTime();
         Notes = tracking.Notes;
+    }
+
+    private void StartTimer()
+    {
+        _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _timer.Tick += OnTimerTick;
+        _timer.Start();
+    }
+
+    private void StopTimer()
+    {
+        if (_timer is null)
+        {
+            return;
+        }
+
+        _timer.Tick -= OnTimerTick;
+        _timer.Stop();
+        _timer = null;
+    }
+
+    private void OnTimerTick(object? sender, EventArgs args)
+    {
+        if (EndTime is not null || _tracking is null)
+        {
+            return;
+        }
+
+        Duration = $"{(int)(DateTime.UtcNow - _tracking.StartTime).TotalHours:d2}:" +
+                   $"{(DateTime.UtcNow - _tracking.StartTime).Minutes:d2}:" +
+                   $"{(DateTime.UtcNow - _tracking.StartTime).Seconds:d2}";
+    }
+
+    private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(StartDate):
+            case nameof(StartTime):
+                await OnStartChanged();
+                return;
+            case nameof(EndDate):
+            case nameof(EndTime):
+                await OnEndChanged();
+                return;
+            case nameof(Notes):
+                await OnNotesChanged();
+                return;
+            default:
+                return;
+        }
+    }
+
+    private async Task OnStartChanged()
+    {
+        if (StartDate is null || StartTime is null || _tracking is null)
+        {
+            return;
+        }
+
+        _isUserUpdate = true;
+        var newStartTime = StartDate.Value.Date + StartTime.Value.TimeOfDay;
+        var response = await _mediator.Send(new UpdateTrackingStartTimeRequest(_tracking.Id, newStartTime));
+        Update(response.Tracking);
+        _isUserUpdate = false;
+    }
+
+    private async Task OnEndChanged()
+    {
+        if (EndDate is null || EndTime is null || _tracking is null)
+        {
+            return;
+        }
+
+        _isUserUpdate = true;
+        var newEndTime = EndDate.Value.Date + EndTime.Value.TimeOfDay;
+        var response = await _mediator.Send(new UpdateTrackingEndTimeRequest(_tracking.Id, newEndTime));
+        Update(response.Tracking);
+        _isUserUpdate = false;
+    }
+
+    private async Task OnNotesChanged()
+    {
+        if (Notes is null || _tracking is null)
+        {
+            return;
+        }
+
+        _isUserUpdate = true;
+        var response = await _mediator.Send(new UpdateTrackingNotesRequest(_tracking.Id, Notes));
+        Update(response.Tracking);
+        _isUserUpdate = false;
     }
 }

@@ -6,36 +6,41 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
     d:DataContext="{d:DesignInstance viewModels:CalendarDetailsViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <Grid>
+    <Grid MinWidth="200">
         <StackPanel Orientation="Vertical">
-            <TextBlock
+            <DatePicker
                 Margin="4"
                 VerticalAlignment="Center"
-                Text="Date:" />
-            <TextBlock
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="{Binding Date}" />
+                ui:ControlHelper.Header="Start date:"
+                SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock
                 Margin="4"
                 VerticalAlignment="Center"
                 Text="Start time:" />
-            <TextBlock
+            <materialDesign:TimePicker
                 Margin="4"
                 VerticalAlignment="Center"
-                Text="{Binding StartTime}" />
+                Is24Hours="True"
+                SelectedTime="{Binding StartTime, UpdateSourceTrigger=PropertyChanged}" />
+            <DatePicker
+                Margin="4"
+                VerticalAlignment="Center"
+                ui:ControlHelper.Header="End date:"
+                SelectedDate="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock
                 Margin="4"
                 VerticalAlignment="Center"
                 Text="End time:" />
-            <TextBlock
+            <materialDesign:TimePicker
                 Margin="4"
                 VerticalAlignment="Center"
-                Text="{Binding EndTime}" />
+                Is24Hours="True"
+                SelectedTime="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock
                 Margin="4"
                 VerticalAlignment="Center"
@@ -48,13 +53,14 @@
                 Margin="4"
                 VerticalAlignment="Center"
                 Text="Notes:" />
-            <TextBlock
+            <TextBox
                 Margin="4"
                 VerticalAlignment="Center"
-                Text="{Binding Notes}" />
+                Text="{Binding Notes, Delay=500, UpdateSourceTrigger=PropertyChanged}" />
             <Button
                 Margin="4"
                 VerticalAlignment="Center"
+                HorizontalAlignment="Left"
                 Command="{Binding StopTrackingCommand}"
                 Style="{StaticResource MaterialDesignIconButton}">
                 <materialDesign:PackIcon

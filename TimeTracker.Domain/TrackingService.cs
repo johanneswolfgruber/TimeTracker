@@ -123,7 +123,7 @@ public class TrackingService : ITrackingService
             throw new InvalidOperationException("Tracking not found");
         }
 
-        tracking.StartTime = request.StartTime;
+        tracking.StartTime = request.StartTime.ToUniversalTime();
 
         context.Entry(tracking).State = EntityState.Modified;
         await context.SaveChangesAsync(cancellationToken);
@@ -145,7 +145,7 @@ public class TrackingService : ITrackingService
             throw new InvalidOperationException("Tracking not found");
         }
 
-        tracking.EndTime = request.EndTime;
+        tracking.EndTime = request.EndTime.ToUniversalTime();
 
         context.Entry(tracking).State = EntityState.Modified;
         await context.SaveChangesAsync(cancellationToken);
