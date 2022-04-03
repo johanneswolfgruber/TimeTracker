@@ -11,8 +11,24 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <Grid>
-        <ListView ItemsSource="{Binding Trackings}" 
-                  SelectedItem="{Binding SelectedTracking}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <Button Grid.Row="0"
+                Command="{Binding ExportSelectedTrackingsCommand}"
+                Style="{StaticResource MaterialDesignIconButton}">
+            <materialDesign:PackIcon
+                Width="24"
+                Height="24"
+                Kind="Export" />
+        </Button>
+        
+        <ListView Grid.Row="1" ItemsSource="{Binding Trackings}" 
+                  SelectedItem="{Binding SelectedTracking}"
+                  SelectionChanged="OnSelectionChanged"
+                  SelectionMode="Extended">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

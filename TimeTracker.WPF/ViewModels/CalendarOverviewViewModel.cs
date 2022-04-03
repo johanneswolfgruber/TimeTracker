@@ -1,4 +1,9 @@
-﻿namespace TimeTracker.WPF.ViewModels;
+﻿using System.Collections.Generic;
+using System.IO;
+using Microsoft.Win32;
+using TimeTracker.Contract.Requests.Export;
+
+namespace TimeTracker.WPF.ViewModels;
 
 public class CalendarOverviewViewModel : BindableBase, INavigationAware
 {
@@ -7,14 +12,19 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
     private readonly IEventAggregator _eventAggregator;
     private Guid? _activityId;
     private TrackingViewModel? _selectedTracking;
+    private IEnumerable<TrackingViewModel>? _selectedTrackings;
 
     public CalendarOverviewViewModel(IMediator mediator, IRegionManager regionManager, IEventAggregator eventAggregator)
     {
         _mediator = mediator;
         _regionManager = regionManager;
         _eventAggregator = eventAggregator;
+        
+        ExportSelectedTrackingsCommand = new DelegateCommand(async () => await OnExportSelectedTrackings());
     }
-    
+
+    public DelegateCommand ExportSelectedTrackingsCommand { get; }
+
     public ObservableCollection<TrackingViewModel> Trackings { get; } = new();
 
     public TrackingViewModel? SelectedTracking
@@ -33,6 +43,12 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
             parameters.Add("ID", _selectedTracking.Id);
             _regionManager.RequestNavigate(RegionNames.CalendarDetailsRegion, nameof(CalendarDetailsView), parameters);
         }
+    }
+
+    public IEnumerable<TrackingViewModel>? SelectedTrackings
+    {
+        get => _selectedTrackings;
+        set => SetProperty(ref _selectedTrackings, value);
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
@@ -106,5 +122,31 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         }
 
         existingTracking.Update(tracking);
+    }
+
+    private async Task OnExportSelectedTrackings()
+    {
+        if (SelectedTrackings is null || !SelectedTrackings.Any())
+        {
+            return;
+        }
+        
+        var saveFileDialog = new SaveFileDialog { Filter = "Excel files | *.xlsx" };
+        if (saveFileDialog.ShowDialog() == false)
+        {
+            return;
+        }
+
+        var directory = new FileInfo(saveFileDialog.FileName).Directory?.FullName;
+        if (directory is null)
+        {
+            return;
+        }
+        
+        var fileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
+        
+        _ = await _mediator.Send(new ExportTrackingsRequest(
+            Path.Combine(directory, fileName),
+            SelectedTrackings.Select(x => x.Id)));
     }
 }

@@ -30,6 +30,7 @@ public class WPFModule : IModule
         containerRegistry.Register<IDateTimeProvider, DateTimeProvider>();
         containerRegistry.Register<IActivityService, ActivityService>();
         containerRegistry.Register<ITrackingService, TrackingService>();
+        containerRegistry.Register<IExportService, ExportService>();
         
         containerRegistry.RegisterForNavigation<SidebarView>();
         containerRegistry.RegisterForNavigation<ActivitiesView>();
