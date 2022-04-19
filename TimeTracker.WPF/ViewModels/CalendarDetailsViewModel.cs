@@ -1,6 +1,4 @@
-﻿using System.Windows.Threading;
-
-namespace TimeTracker.WPF.ViewModels;
+﻿namespace TimeTracker.WPF.ViewModels;
 
 public class CalendarDetailsViewModel : BindableBase, INavigationAware
 {
@@ -13,7 +11,6 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     private DateTime? _endTime;
     private string _duration = string.Empty;
     private string? _notes = string.Empty;
-    private DispatcherTimer? _timer;
     private bool _isUserUpdate;
 
     public CalendarDetailsViewModel(IMediator mediator, IEventAggregator eventAggregator)
@@ -70,14 +67,13 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     {
         _eventAggregator.GetEvent<TrackingCreatedOrUpdatedEvent>().Subscribe(OnTrackingCreatedOrUpdated);
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Subscribe(OnTrackingDeleted);
+        _eventAggregator.GetEvent<DurationUpdatedEvent>().Subscribe(OnDurationUpdated);
         
         var trackingId = navigationContext.Parameters.GetValue<Guid>("ID");
         
         Initialize(trackingId).Wait();
 
         PropertyChanged += OnPropertyChanged;
-
-        StartTimer();
     }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -89,10 +85,9 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     {
         _eventAggregator.GetEvent<TrackingCreatedOrUpdatedEvent>().Unsubscribe(OnTrackingCreatedOrUpdated);
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Unsubscribe(OnTrackingDeleted);
+        _eventAggregator.GetEvent<DurationUpdatedEvent>().Unsubscribe(OnDurationUpdated);
         
         PropertyChanged -= OnPropertyChanged;
-        
-        StopTimer();
     }
 
     private async Task Initialize(Guid? trackingId)
@@ -145,7 +140,6 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         }
         
         await _mediator.Send(new StopTrackingRequest(_tracking.Id));
-        StopTimer();
     }
 
     private bool CanStopTracking() => EndTime is null;
@@ -155,12 +149,8 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         _tracking = tracking;
         
         Duration = tracking.EndTime is null 
-            ? $"{(int)(DateTime.UtcNow - _tracking.StartTime).TotalHours:d2}:" +
-              $"{(DateTime.UtcNow - _tracking.StartTime).Minutes:d2}:" +
-              $"{(DateTime.UtcNow - _tracking.StartTime).Seconds:d2}" 
-            : $"{(int)tracking.Duration.TotalHours:d2}:" +
-              $"{tracking.Duration.Minutes:d2}:" +
-              $"{tracking.Duration.Seconds:d2}";
+            ? (DateTime.UtcNow - _tracking.StartTime).ToDurationFormatString()
+            : tracking.Duration.ToDurationFormatString();
         
         if (_isUserUpdate)
         {
@@ -174,35 +164,14 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         Notes = tracking.Notes;
     }
 
-    private void StartTimer()
+    private void OnDurationUpdated(DurationUpdated args)
     {
-        _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        _timer.Tick += OnTimerTick;
-        _timer.Start();
-    }
-
-    private void StopTimer()
-    {
-        if (_timer is null)
+        if (_tracking is null || _tracking.Id != args.TrackingId)
         {
             return;
         }
 
-        _timer.Tick -= OnTimerTick;
-        _timer.Stop();
-        _timer = null;
-    }
-
-    private void OnTimerTick(object? sender, EventArgs args)
-    {
-        if (EndTime is not null || _tracking is null)
-        {
-            return;
-        }
-
-        Duration = $"{(int)(DateTime.UtcNow - _tracking.StartTime).TotalHours:d2}:" +
-                   $"{(DateTime.UtcNow - _tracking.StartTime).Minutes:d2}:" +
-                   $"{(DateTime.UtcNow - _tracking.StartTime).Seconds:d2}";
+        Duration = args.Duration.ToDurationFormatString();
     }
 
     private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -19,6 +19,8 @@ public partial class CalendarOverviewView : UserControl
             return;
         }
 
-        viewModel.SelectedTrackings = listView.SelectedItems.Cast<TrackingViewModel>();
+        viewModel.SelectedTrackings = listView.SelectedItems.Count == 0 
+            ? null 
+            : new ReadOnlyObservableCollection<object>(new ObservableCollection<object>(listView.SelectedItems.Cast<object>()));
     }
 }

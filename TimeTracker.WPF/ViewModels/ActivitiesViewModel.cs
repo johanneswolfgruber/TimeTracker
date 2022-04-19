@@ -69,6 +69,7 @@ public class ActivitiesViewModel : BindableBase
         Activities.Clear();
         var response = await _mediator.Send(new GetAllActivitiesRequest());
         Activities.AddRange(response.Activities.Select(Create));
+        SelectedActivity = Activities.FirstOrDefault();
     }
 
     private ActivityViewModel Create(ActivityDto activity)

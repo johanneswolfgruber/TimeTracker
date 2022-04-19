@@ -10,8 +10,9 @@
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     ui:WindowHelper.UseModernWindowStyle="True"
     Title="Time Tracker"
-    Width="1200"
-    Height="800"
+    Width="1920"
+    Height="1080"
+    WindowState="Maximized"
     mc:Ignorable="d"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     TextElement.FontWeight="Regular"
@@ -22,7 +23,7 @@
     FontFamily="{DynamicResource MaterialDesignFont}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         

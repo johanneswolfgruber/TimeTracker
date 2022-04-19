@@ -62,12 +62,8 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 Command="{Binding StopTrackingCommand}"
-                Style="{StaticResource MaterialDesignIconButton}">
-                <materialDesign:PackIcon
-                    Width="24"
-                    Height="24"
-                    Kind="Stop" />
-            </Button>
+                Style="{StaticResource MaterialDesignOutlinedButton}"
+                Content="Stop"/>
         </StackPanel>
     </Grid>
 </UserControl>

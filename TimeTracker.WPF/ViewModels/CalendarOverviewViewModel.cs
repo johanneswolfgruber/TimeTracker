@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Microsoft.Win32;
-using TimeTracker.Contract.Requests.Export;
-
-namespace TimeTracker.WPF.ViewModels;
+﻿namespace TimeTracker.WPF.ViewModels;
 
 public class CalendarOverviewViewModel : BindableBase, INavigationAware
 {
@@ -12,7 +7,8 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
     private readonly IEventAggregator _eventAggregator;
     private Guid? _activityId;
     private TrackingViewModel? _selectedTracking;
-    private IEnumerable<TrackingViewModel>? _selectedTrackings;
+    private ReadOnlyObservableCollection<object>? _selectedTrackings;
+    private IDisposable? _timerDisposable;
 
     public CalendarOverviewViewModel(IMediator mediator, IRegionManager regionManager, IEventAggregator eventAggregator)
     {
@@ -20,12 +16,14 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         _regionManager = regionManager;
         _eventAggregator = eventAggregator;
         
-        ExportSelectedTrackingsCommand = new DelegateCommand(async () => await OnExportSelectedTrackings());
+        ExportSelectedTrackingsCommand = new DelegateCommand<ReadOnlyObservableCollection<object>>(async items => await OnExportSelectedTrackings(items));
     }
 
-    public DelegateCommand ExportSelectedTrackingsCommand { get; }
+    public DelegateCommand<ReadOnlyObservableCollection<object>> ExportSelectedTrackingsCommand { get; }
 
     public ObservableCollection<TrackingViewModel> Trackings { get; } = new();
+    
+    public Dictionary<string, TimeSpan> GroupDurations { get; } = new();
 
     public TrackingViewModel? SelectedTracking
     {
@@ -40,12 +38,12 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
             }
 
             var parameters = new NavigationParameters();
-            parameters.Add("ID", _selectedTracking.Id);
+            parameters.Add("ID", _selectedTracking.Tracking.Id);
             _regionManager.RequestNavigate(RegionNames.CalendarDetailsRegion, nameof(CalendarDetailsView), parameters);
         }
     }
 
-    public IEnumerable<TrackingViewModel>? SelectedTrackings
+    public ReadOnlyObservableCollection<object>? SelectedTrackings
     {
         get => _selectedTrackings;
         set => SetProperty(ref _selectedTrackings, value);
@@ -57,6 +55,7 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Subscribe(OnTrackingDeleted);
         _activityId = navigationContext.Parameters.GetValue<Guid>("ID");
         Initialize().Wait();
+        StartTimer();
     }
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -68,6 +67,7 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
     {
         _eventAggregator.GetEvent<TrackingCreatedOrUpdatedEvent>().Unsubscribe(OnTrackingCreatedOrUpdated);
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Unsubscribe(OnTrackingDeleted);
+        StopTimer();
     }
 
     private async Task Initialize()
@@ -84,6 +84,8 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         {
             AddOrUpdate(tracking);
         }
+
+        SelectedTracking = Trackings.LastOrDefault();
     }
 
     private void OnTrackingCreatedOrUpdated(TrackingCreatedOrUpdated notification)
@@ -98,7 +100,7 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
 
     private void OnTrackingDeleted(TrackingDeleted notification)
     {
-        var trackingToRemove = Trackings.FirstOrDefault(x => x.Id == notification.TrackingId);
+        var trackingToRemove = Trackings.FirstOrDefault(x => x.Tracking.Id == notification.TrackingId);
         if (trackingToRemove is null)
         {
             return;
@@ -114,7 +116,7 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
 
     private void AddOrUpdate(TrackingDto tracking)
     {
-        var existingTracking = Trackings.FirstOrDefault(x => x.Id == tracking.Id);
+        var existingTracking = Trackings.FirstOrDefault(x => x.Tracking.Id == tracking.Id);
         if (existingTracking is null)
         {
             Trackings.Add(Create(tracking));
@@ -124,9 +126,9 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         existingTracking.Update(tracking);
     }
 
-    private async Task OnExportSelectedTrackings()
+    private async Task OnExportSelectedTrackings(ReadOnlyObservableCollection<object> items)
     {
-        if (SelectedTrackings is null || !SelectedTrackings.Any())
+        if (!items.Any())
         {
             return;
         }
@@ -147,6 +149,49 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         
         _ = await _mediator.Send(new ExportTrackingsRequest(
             Path.Combine(directory, fileName),
-            SelectedTrackings.Select(x => x.Id)));
+            items.Cast<TrackingViewModel>().Select(x => x.Tracking.Id)));
+    }
+    
+    private void StartTimer()
+    {
+        _timerDisposable = Observable
+            .Interval(TimeSpan.FromSeconds(1), DispatcherScheduler.Current)
+            .StartWith(-1)
+            .Subscribe(OnTimerTick);
+    }
+
+    private void StopTimer()
+    {
+        if (_timerDisposable is null)
+        {
+            return;
+        }
+
+        _timerDisposable.Dispose();
+        _timerDisposable = null;
+    }
+
+    private void OnTimerTick(long i = -1)
+    {
+        var groups = Trackings.GroupBy(x => x.CalendarWeek);
+        foreach (var group in groups)
+        {
+            var totalDuration = group.Select(x =>
+            {
+                if (string.IsNullOrEmpty(x.EndTime))
+                {
+                    var duration = DateTime.UtcNow - x.Tracking.StartTime;
+                    x.UpdateDuration(duration);
+                    _eventAggregator.GetEvent<DurationUpdatedEvent>().Publish(new DurationUpdated(x.Tracking.Id, duration));
+                }
+
+                return x.DurationTimeSpan;
+            }).Sum();
+            
+            var groupId = group.Key;
+            GroupDurations[groupId] = totalDuration;
+        }
+        
+        RaisePropertyChanged(nameof(GroupDurations));
     }
 }

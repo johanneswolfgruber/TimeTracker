@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:local="clr-namespace:TimeTracker.WPF.Views"
              xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
              d:DataContext="{d:DesignInstance viewModels:SidebarViewModel}"
              mc:Ignorable="d"
@@ -12,23 +11,25 @@
     <UserControl.Resources>
         <Style x:Key="RadioButtonStyle" 
                TargetType="RadioButton" 
-               BasedOn="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
+               BasedOn="{StaticResource MaterialDesignTabRadioButtonLeft}">
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueLightBrush}"/>
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="Gainsboro" />
+                    <Setter Property="Height" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
         
     </UserControl.Resources>
     <Grid>
+        <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource PrimaryHueLightBrush}"/>
         <StackPanel Orientation="Vertical">
             <RadioButton
                 Margin="4"
                 GroupName="ContentGroup"
                 IsChecked="{Binding IsCalendarSelected}"
-                Style="{StaticResource RadioButtonStyle}"
-                ToolTip="MaterialDesignFloatingActionMiniLightButton">
+                Style="{StaticResource RadioButtonStyle}">
                 <materialDesign:PackIcon
                     Kind="Calendar"
                     Height="24"
@@ -38,8 +39,7 @@
                 Margin="4"
                 GroupName="ContentGroup"
                 IsChecked="{Binding IsInsightsSelected}"
-                Style="{StaticResource RadioButtonStyle}"
-                ToolTip="MaterialDesignFloatingActionMiniLightButton">
+                Style="{StaticResource RadioButtonStyle}">
                 <materialDesign:PackIcon
                     Kind="ChartBar"
                     Height="24"
@@ -49,8 +49,7 @@
                 Margin="4"
                 GroupName="ContentGroup"
                 IsChecked="{Binding IsSettingsSelected}"
-                Style="{StaticResource RadioButtonStyle}"
-                ToolTip="MaterialDesignFloatingActionMiniLightButton">
+                Style="{StaticResource RadioButtonStyle}">
                 <materialDesign:PackIcon
                     Kind="Cog"
                     Height="24"
