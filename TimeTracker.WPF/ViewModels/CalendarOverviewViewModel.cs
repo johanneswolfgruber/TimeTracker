@@ -7,6 +7,7 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
     private readonly IEventAggregator _eventAggregator;
     private Guid? _activityId;
     private TrackingViewModel? _selectedTracking;
+    private string? _selectedTotalTime;
     private ReadOnlyObservableCollection<object>? _selectedTrackings;
     private IDisposable? _timerDisposable;
 
@@ -34,14 +35,31 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
             
             if (_selectedTracking is null)
             {
+                var activeView = _regionManager.Regions[RegionNames.CalendarDetailsRegion].ActiveViews.FirstOrDefault();
+
+                if (activeView != null)
+                {
+                    _regionManager.Regions[RegionNames.CalendarDetailsRegion].Deactivate(activeView);
+                }
+
                 return;
             }
 
-            var parameters = new NavigationParameters();
-            parameters.Add("ID", _selectedTracking.Tracking.Id);
+            var parameters = new NavigationParameters
+            {
+                { "ID", _selectedTracking.Tracking.Id }
+            };
             _regionManager.RequestNavigate(RegionNames.CalendarDetailsRegion, nameof(CalendarDetailsView), parameters);
         }
     }
+
+
+    public string? SelectedTotalTime
+    {
+        get => _selectedTotalTime;
+        set => SetProperty(ref _selectedTotalTime, value);
+    }
+
 
     public ReadOnlyObservableCollection<object>? SelectedTrackings
     {
@@ -133,7 +151,11 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
             return;
         }
         
-        var saveFileDialog = new SaveFileDialog { Filter = "Excel files | *.xlsx" };
+        var saveFileDialog = new SaveFileDialog 
+        {
+            FileName = "Leistungsnachweis",
+            Filter = "Excel files | *.xlsx" 
+        };
         if (saveFileDialog.ShowDialog() == false)
         {
             return;
@@ -191,7 +213,16 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
             var groupId = group.Key;
             GroupDurations[groupId] = totalDuration;
         }
-        
+
+        if (_selectedTrackings is null || _selectedTrackings.Count == 0)
+        {
+            SelectedTotalTime = null;
+        }
+
+        SelectedTotalTime = SelectedTrackings is null || SelectedTrackings.Count == 0 
+            ? null 
+            : SelectedTrackings.Cast<TrackingViewModel>().Select(x => x.DurationTimeSpan).Sum().ToDurationFormatString();
+
         RaisePropertyChanged(nameof(GroupDurations));
     }
 }

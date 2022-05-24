@@ -3,67 +3,84 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
     d:DataContext="{d:DesignInstance viewModels:CalendarDetailsViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <Grid MinWidth="200">
-        <StackPanel Orientation="Vertical">
-            <DatePicker
-                Margin="4"
-                VerticalAlignment="Center"
-                ui:ControlHelper.Header="Start date:"
-                SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="Start time:" />
-            <materialDesign:TimePicker
-                Margin="4"
-                VerticalAlignment="Center"
-                Is24Hours="True"
-                SelectedTime="{Binding StartTime, UpdateSourceTrigger=PropertyChanged}" />
-            <DatePicker
-                Margin="4"
-                VerticalAlignment="Center"
-                ui:ControlHelper.Header="End date:"
-                SelectedDate="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="End time:" />
-            <materialDesign:TimePicker
-                Margin="4"
-                VerticalAlignment="Center"
-                Is24Hours="True"
-                SelectedTime="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="Duration:" />
-            <TextBlock
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="{Binding Duration}" />
-            <TextBlock
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="Notes:" />
-            <TextBox
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="{Binding Notes, Delay=500, UpdateSourceTrigger=PropertyChanged}" />
-            <Button
-                Margin="4"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                Command="{Binding StopTrackingCommand}"
-                Style="{StaticResource MaterialDesignOutlinedButton}"
-                Content="Stop"/>
-        </StackPanel>
+    <Grid Width="250">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,8,8,8"
+            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+            Text="Details" />
+
+        <materialDesign:Card
+            Grid.Row="1"
+            Margin="0,8,8,8"
+            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+            <StackPanel Margin="8" Orientation="Vertical">
+                <DatePicker
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    ui:ControlHelper.Header="Start date:"
+                    SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Text="Start time:" />
+                <materialDesign:TimePicker
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Is24Hours="True"
+                    SelectedTime="{Binding StartTime, UpdateSourceTrigger=PropertyChanged}" />
+                <DatePicker
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    ui:ControlHelper.Header="End date:"
+                    SelectedDate="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Text="End time:" />
+                <materialDesign:TimePicker
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Is24Hours="True"
+                    SelectedTime="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Text="Duration:" />
+                <TextBlock
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Text="{Binding Duration}" />
+                <TextBlock
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Text="Notes:" />
+                <TextBox
+                    Margin="4"
+                    VerticalAlignment="Center"
+                    Text="{Binding Notes, Delay=500, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Margin="4"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Command="{Binding StopTrackingCommand}"
+                    Content="Stop"
+                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+            </StackPanel>
+        </materialDesign:Card>
     </Grid>
 </UserControl>

@@ -13,10 +13,18 @@
     <Grid MinWidth="300">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <TextBlock
+            Grid.Row="0"
+            Margin="8"
+            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+            Text="Activities" />
+
+        <Grid Grid.Row="1" Margin="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -24,7 +32,6 @@
 
             <Button
                 Grid.Column="0"
-                Margin="4"
                 Command="{Binding CreateActivityCommand}"
                 Content="Create Activity" />
             <TextBox
@@ -34,45 +41,53 @@
                 Text="{Binding ActivityName, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
-        <ListView
-            Grid.Row="1"
-            HorizontalContentAlignment="Stretch"
-            ItemsSource="{Binding Activities}"
-            SelectedItem="{Binding SelectedActivity}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <materialDesign:Card HorizontalAlignment="Stretch">
-                        <materialDesign:Card.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Command="{Binding DeleteActivityCommand}">
-                                    <MenuItem.Header>
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon
-                                                Width="24"
-                                                Height="24"
-                                                Kind="Delete" />
-                                            <TextBlock VerticalAlignment="Center" Margin="8,0,8,0" Text="Delete" />
-                                        </StackPanel>
-                                    </MenuItem.Header>
-                                </MenuItem>
-                            </ContextMenu>
-                        </materialDesign:Card.ContextMenu>
-                        <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Stretch">
+        <materialDesign:Card
+            Grid.Row="2"
+            Margin="8"
+            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+            <ListView
+                HorizontalContentAlignment="Stretch"
+                ItemsSource="{Binding Activities}"
+                SelectedItem="{Binding SelectedActivity}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                            Margin="4"
+                            HorizontalAlignment="Stretch"
+                            Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Command="{Binding DeleteActivityCommand}">
+                                        <MenuItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon
+                                                    Width="24"
+                                                    Height="24"
+                                                    Kind="Delete" />
+                                                <TextBlock
+                                                    Margin="8,0,8,0"
+                                                    VerticalAlignment="Center"
+                                                    Text="Delete" />
+                                            </StackPanel>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                             <Button
-                                Margin="4"
                                 VerticalAlignment="Center"
                                 Command="{Binding StartTrackingCommand}"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"
-                                Content="Start"/>
+                                Content="Start"
+                                Style="{StaticResource MaterialDesignOutlinedButton}" />
                             <TextBox
+                                MinWidth="100"
                                 Margin="4"
                                 VerticalAlignment="Center"
-                                MinWidth="100"
                                 Text="{Binding Name, Delay=500, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
-                    </materialDesign:Card>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </materialDesign:Card>
+
     </Grid>
 </UserControl>

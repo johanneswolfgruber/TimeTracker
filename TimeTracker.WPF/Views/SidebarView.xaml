@@ -1,29 +1,32 @@
-﻿<UserControl x:Class="TimeTracker.WPF.Views.SidebarView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
-             d:DataContext="{d:DesignInstance viewModels:SidebarViewModel}"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="TimeTracker.WPF.Views.SidebarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:SidebarViewModel}"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
     <UserControl.Resources>
-        <Style x:Key="RadioButtonStyle" 
-               TargetType="RadioButton" 
-               BasedOn="{StaticResource MaterialDesignTabRadioButtonLeft}">
-            <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueLightBrush}"/>
+        <Style
+            x:Key="RadioButtonStyle"
+            BasedOn="{StaticResource MaterialDesignTabRadioButtonLeft}"
+            TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueLightBrush}" />
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Height" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"/>
+                    <Setter Property="Height" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
     </UserControl.Resources>
     <Grid>
-        <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource PrimaryHueLightBrush}"/>
+        <Border BorderBrush="{DynamicResource PrimaryHueLightBrush}" BorderThickness="0,0,1,0" />
         <StackPanel Orientation="Vertical">
             <RadioButton
                 Margin="4"
@@ -31,9 +34,9 @@
                 IsChecked="{Binding IsCalendarSelected}"
                 Style="{StaticResource RadioButtonStyle}">
                 <materialDesign:PackIcon
-                    Kind="Calendar"
+                    Width="24"
                     Height="24"
-                    Width="24" />
+                    Kind="Calendar" />
             </RadioButton>
             <RadioButton
                 Margin="4"
@@ -41,9 +44,9 @@
                 IsChecked="{Binding IsInsightsSelected}"
                 Style="{StaticResource RadioButtonStyle}">
                 <materialDesign:PackIcon
-                    Kind="ChartBar"
+                    Width="24"
                     Height="24"
-                    Width="24" />
+                    Kind="ChartBar" />
             </RadioButton>
             <RadioButton
                 Margin="4"
@@ -51,9 +54,9 @@
                 IsChecked="{Binding IsSettingsSelected}"
                 Style="{StaticResource RadioButtonStyle}">
                 <materialDesign:PackIcon
-                    Kind="Cog"
+                    Width="24"
                     Height="24"
-                    Width="24" />
+                    Kind="Cog" />
             </RadioButton>
         </StackPanel>
     </Grid>

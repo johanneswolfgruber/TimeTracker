@@ -35,8 +35,10 @@ public class ActivitiesViewModel : BindableBase
                 return;
             }
 
-            var parameters = new NavigationParameters();
-            parameters.Add("ID", _selectedActivity.Id);
+            var parameters = new NavigationParameters
+            {
+                { "ID", _selectedActivity.Id }
+            };
             _regionManager.RequestNavigate(RegionNames.CalendarOverviewRegion, nameof(CalendarOverviewView), parameters);
         }
     }
