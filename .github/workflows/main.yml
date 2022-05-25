@@ -25,6 +25,7 @@ jobs:
     - name: Run build
       run: dotnet build -c Release
       
+    # upload build artifacts  
     - uses: actions/upload-artifact@v3
       with:
         name: build-artifacts
