@@ -8,6 +8,7 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
     private Guid? _activityId;
     private TrackingViewModel? _selectedTracking;
     private string? _selectedTotalTime;
+    private string? _billableTime;
     private ReadOnlyObservableCollection<object>? _selectedTrackings;
     private IDisposable? _timerDisposable;
 
@@ -60,11 +61,21 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         set => SetProperty(ref _selectedTotalTime, value);
     }
 
+    public string? BillableTime
+    {
+        get => _billableTime;
+        set => SetProperty(ref _billableTime, value);
+    }
+
 
     public ReadOnlyObservableCollection<object>? SelectedTrackings
     {
         get => _selectedTrackings;
-        set => SetProperty(ref _selectedTrackings, value);
+        set
+        {
+            SetProperty(ref _selectedTrackings, value);
+            SetTotalAndBillableTime();
+        }
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
@@ -104,6 +115,11 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         }
 
         SelectedTracking = Trackings.LastOrDefault();
+
+        if (SelectedTracking is not null)
+        {
+            SelectedTracking.IsExpanded = true;
+        }
     }
 
     private void OnTrackingCreatedOrUpdated(TrackingCreatedOrUpdated notification)
@@ -214,15 +230,21 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
             GroupDurations[groupId] = totalDuration;
         }
 
+        RaisePropertyChanged(nameof(GroupDurations));
+        SetTotalAndBillableTime();
+    }
+
+    private void SetTotalAndBillableTime()
+    {
         if (_selectedTrackings is null || _selectedTrackings.Count == 0)
         {
             SelectedTotalTime = null;
+            BillableTime = null;
+            return;
         }
 
-        SelectedTotalTime = SelectedTrackings is null || SelectedTrackings.Count == 0 
-            ? null 
-            : SelectedTrackings.Cast<TrackingViewModel>().Select(x => x.DurationTimeSpan).Sum().ToDurationFormatString();
-
-        RaisePropertyChanged(nameof(GroupDurations));
+        var totalTime = _selectedTrackings.Cast<TrackingViewModel>().Select(x => x.DurationTimeSpan).Sum();
+        SelectedTotalTime = totalTime.ToDurationFormatString();
+        BillableTime = (totalTime * 0.84).ToDurationFormatString();
     }
 }

@@ -9,6 +9,7 @@ public class TrackingViewModel : BindableBase
     private string? _endTime;
     private string _duration = string.Empty;
     private TimeSpan _durationTimeSpan;
+    private bool _isExpanded;
 
     public TrackingViewModel(IMediator mediator, TrackingDto tracking)
     {
@@ -27,6 +28,12 @@ public class TrackingViewModel : BindableBase
     public DelegateCommand StopTrackingCommand { get; }
     
     public DelegateCommand DeleteTrackingCommand { get; }
+
+    public bool IsExpanded
+    {
+        get => _isExpanded;
+        set => SetProperty(ref _isExpanded, value);
+    }
 
     public string Date
     {
