@@ -1,4 +1,5 @@
 ﻿global using System;
+global using System.Configuration;
 global using System.Collections.Generic;
 global using System.IO;
 global using System.Reactive.Concurrency;

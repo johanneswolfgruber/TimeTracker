@@ -10,6 +10,7 @@ public class WPFModule : IModule
         regionManager.RegisterViewWithRegion(RegionNames.ActivitiesRegion, nameof(ActivitiesView));
         regionManager.RegisterViewWithRegion(RegionNames.CalendarOverviewRegion, nameof(CalendarOverviewView));
         regionManager.RegisterViewWithRegion(RegionNames.CalendarDetailsRegion, nameof(CalendarDetailsView));
+        regionManager.RegisterViewWithRegion(RegionNames.SettingsRegion, nameof(SettingsView));
     }
 
     public void RegisterTypes(IContainerRegistry containerRegistry)

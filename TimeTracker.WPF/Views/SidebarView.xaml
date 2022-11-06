@@ -16,6 +16,7 @@
             BasedOn="{StaticResource MaterialDesignTabRadioButtonLeft}"
             TargetType="RadioButton">
             <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}" />
+            <Setter Property="BorderThickness" Value="3,0,0,0" />
             <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueLightBrush}" />
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="True">
@@ -26,10 +27,9 @@
 
     </UserControl.Resources>
     <Grid>
-        <Border BorderBrush="{DynamicResource PrimaryHueLightBrush}" BorderThickness="0,0,1,0" />
+        <Border BorderBrush="{DynamicResource PrimaryHueLightBrush}" BorderThickness="0,0,2,0" />
         <StackPanel Orientation="Vertical">
             <RadioButton
-                Margin="4"
                 GroupName="ContentGroup"
                 IsChecked="{Binding IsCalendarSelected}"
                 Style="{StaticResource RadioButtonStyle}">
@@ -39,7 +39,6 @@
                     Kind="Calendar" />
             </RadioButton>
             <RadioButton
-                Margin="4"
                 GroupName="ContentGroup"
                 IsChecked="{Binding IsInsightsSelected}"
                 Style="{StaticResource RadioButtonStyle}">
@@ -49,7 +48,6 @@
                     Kind="ChartBar" />
             </RadioButton>
             <RadioButton
-                Margin="4"
                 GroupName="ContentGroup"
                 IsChecked="{Binding IsSettingsSelected}"
                 Style="{StaticResource RadioButtonStyle}">

@@ -8,4 +8,6 @@ public static class RegionNames
     public static readonly string ActivitiesRegion = "ActivitiesRegion";
     public static readonly string CalendarOverviewRegion = "CalendarOverviewRegion";
     public static readonly string CalendarDetailsRegion = "CalendarDetailsRegion";
+
+    public static readonly string SettingsRegion = "SettingsRegion";
 }

@@ -9,29 +9,36 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
+    Margin="16,0,0,0"
     d:DataContext="{d:DesignInstance viewModels:CalendarOverviewViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:TotalDurationConverter x:Key="TotalDurationConverter" />
-        <converters:CollapsedWhenNullConverter x:Key="CollapsedWhenNullConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <CollectionViewSource
-            x:Key="Source"
-            IsLiveGroupingRequested="True"
-            Source="{Binding Trackings, UpdateSourceTrigger=PropertyChanged}">
-            <CollectionViewSource.LiveGroupingProperties>
-                <system:String>CalendarWeek</system:String>
-            </CollectionViewSource.LiveGroupingProperties>
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="CalendarWeek" />
-            </CollectionViewSource.GroupDescriptions>
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription Direction="Descending" PropertyName="CalendarWeek" />
-                <componentmodel:SortDescription Direction="Ascending" PropertyName="Tracking.StartTime" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+            <converters:TotalDurationConverter x:Key="TotalDurationConverter" />
+            <converters:CollapsedWhenNullConverter x:Key="CollapsedWhenNullConverter" />
+
+            <CollectionViewSource
+                x:Key="Source"
+                IsLiveGroupingRequested="True"
+                Source="{Binding Trackings, UpdateSourceTrigger=PropertyChanged}">
+                <CollectionViewSource.LiveGroupingProperties>
+                    <system:String>CalendarWeek</system:String>
+                </CollectionViewSource.LiveGroupingProperties>
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="CalendarWeek" />
+                </CollectionViewSource.GroupDescriptions>
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription Direction="Descending" PropertyName="CalendarWeek" />
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="Tracking.StartTime" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -46,123 +53,134 @@
 
         <TextBlock
             Grid.Row="0"
-            Margin="0,8,8,8"
             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
             Text="Overview" />
 
         <materialDesign:Card
             Grid.Row="1"
             Grid.ColumnSpan="2"
-            Margin="0,8,8,8"
-            materialDesign:ShadowAssist.ShadowDepth="Depth0">
-            <ListView
-                Margin="8"
+            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+            Background="Transparent">
+            <DataGrid
                 HorizontalContentAlignment="Stretch"
+                AutoGenerateColumns="False"
                 ItemsSource="{Binding Source={StaticResource Source}}"
                 SelectedItem="{Binding SelectedTracking}"
                 SelectionChanged="OnSelectionChanged"
                 SelectionMode="Extended">
-                <ListView.ItemTemplate>
-                    <DataTemplate DataType="viewModels:TrackingViewModel">
-                        <DockPanel Margin="4" Background="Transparent">
-                            <DockPanel.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Command="{Binding DeleteTrackingCommand}">
-                                        <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <materialDesign:PackIcon
-                                                    Width="24"
-                                                    Height="24"
-                                                    Kind="Delete" />
-                                                <TextBlock
-                                                    Margin="8,0,8,0"
-                                                    VerticalAlignment="Center"
-                                                    Text="Delete" />
-                                            </StackPanel>
-                                        </MenuItem.Header>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </DockPanel.ContextMenu>
-                            <TextBlock
-                                Margin="4"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Left"
-                                Text="{Binding Date}" />
-                            <TextBlock
-                                Margin="4"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Left"
-                                Text=" | " />
-                            <TextBlock
-                                Margin="4"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Left"
-                                Text="{Binding StartTime}" />
-                            <TextBlock
-                                Margin="4"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Left"
-                                Text=" | " />
-                            <TextBlock
-                                Margin="4"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Left"
-                                Text="{Binding EndTime}" />
-                            <TextBlock
-                                Margin="4"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Left"
-                                Text=" | " />
-                            <TextBlock
-                                Margin="4"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Left"
-                                Text="{Binding Duration}" />
-                            <Button
-                                Margin="0,0,52,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Command="{Binding StopTrackingCommand}"
-                                Content="Stop"
-                                DockPanel.Dock="Right"
-                                Style="{StaticResource MaterialDesignOutlinedButton}" />
-                        </DockPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.GroupStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        Width="100"
+                        CanUserResize="False"
+                        Header="Date">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Date}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="100"
+                        CanUserResize="False"
+                        Header="Start Time">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding StartTime}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="100"
+                        CanUserResize="False"
+                        Header="End Time">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding EndTime}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="100"
+                        CanUserResize="False"
+                        Header="Duration">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Duration}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="*" CanUserResize="False" />
+                    <DataGridTemplateColumn Width="Auto" CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding StopTrackingCommand}"
+                                    Style="{StaticResource MaterialDesignIconButton}">
+                                    <materialDesign:PackIcon Kind="Stop" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="Auto" CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DeleteTrackingCommand}"
+                                    Style="{StaticResource MaterialDesignIconButton}">
+                                    <materialDesign:PackIcon Kind="Delete" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                <DataGrid.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.ContainerStyle>
                             <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Margin" Value="0,0,0,4" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <Expander
-                                                BorderBrush="{DynamicResource PrimaryHueLightBrush}"
-                                                BorderThickness="0,0,0,1"
-                                                IsExpanded="{Binding Items[0].IsExpanded}">
+                                            <Expander IsExpanded="{Binding Items[^1].IsExpanded}">
                                                 <Expander.Header>
                                                     <DockPanel>
                                                         <TextBlock
-                                                            Margin="4,0,0,0"
                                                             VerticalAlignment="Center"
                                                             DockPanel.Dock="Left"
+                                                            FontSize="16"
                                                             FontWeight="Bold"
                                                             Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" />
                                                         <TextBlock
                                                             Margin="16,0,0,0"
                                                             VerticalAlignment="Center"
                                                             DockPanel.Dock="Left"
+                                                            FontSize="16"
                                                             FontWeight="Bold"
                                                             Text="Total:" />
                                                         <TextBlock
                                                             Margin="4,0,0,0"
                                                             VerticalAlignment="Center"
                                                             DockPanel.Dock="Left"
+                                                            FontSize="16"
                                                             FontWeight="Bold">
                                                             <TextBlock.Text>
                                                                 <MultiBinding Converter="{StaticResource TotalDurationConverter}">
-                                                                    <Binding Path="DataContext.GroupDurations" RelativeSource="{RelativeSource AncestorType=ListView}" />
+                                                                    <Binding Path="DataContext.GroupDurations" RelativeSource="{RelativeSource AncestorType=DataGrid}" />
                                                                     <Binding Path="Name" />
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
@@ -170,11 +188,12 @@
                                                         <Button
                                                             HorizontalAlignment="Right"
                                                             VerticalAlignment="Center"
-                                                            Command="{Binding DataContext.ExportSelectedTrackingsCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                            Command="{Binding DataContext.ExportSelectedTrackingsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding Items}"
-                                                            Content="Export"
                                                             DockPanel.Dock="Right"
-                                                            Style="{StaticResource MaterialDesignOutlinedButton}" />
+                                                            Style="{StaticResource MaterialDesignIconButton}">
+                                                            <materialDesign:PackIcon Kind="Export" />
+                                                        </Button>
                                                     </DockPanel>
                                                 </Expander.Header>
                                                 <Expander.Content>
@@ -187,8 +206,8 @@
                             </Style>
                         </GroupStyle.ContainerStyle>
                     </GroupStyle>
-                </ListView.GroupStyle>
-            </ListView>
+                </DataGrid.GroupStyle>
+            </DataGrid>
         </materialDesign:Card>
 
         <Grid
@@ -204,25 +223,25 @@
 
             <TextBlock
                 Grid.Row="0"
-                Margin="0,8,8,8"
+                Margin="0,8,0,8"
                 Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                 Text="Summary" />
 
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <TextBlock
-                    Margin="0,8,8,8"
+                    Margin="0,8,0,8"
                     Style="{StaticResource MaterialDesignBody1TextBlock}"
                     Text="Total time: " />
 
                 <TextBlock
-                    Margin="0,8,8,8"
+                    Margin="0,8,0,8"
                     Style="{StaticResource MaterialDesignBody1TextBlock}"
                     Text="{Binding SelectedTotalTime}" />
             </StackPanel>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <TextBlock
-                    Margin="0,8,8,8"
+                    Margin="0,8,0,8"
                     Style="{StaticResource MaterialDesignBody1TextBlock}"
                     Text="Billable time: " />
 
@@ -234,7 +253,7 @@
 
             <Button
                 Grid.Row="3"
-                Margin="0,8,8,8"
+                Margin="0,8,0,8"
                 Command="{Binding ExportSelectedTrackingsCommand}"
                 CommandParameter="{Binding SelectedTrackings}"
                 Content="Export Selected Trackings"

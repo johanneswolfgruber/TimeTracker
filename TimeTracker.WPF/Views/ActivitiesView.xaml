@@ -6,6 +6,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:TimeTracker.WPF.ViewModels"
+    Margin="16,0,0,0"
     d:DataContext="{d:DesignInstance viewModels:ActivitiesViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -20,41 +21,28 @@
 
         <TextBlock
             Grid.Row="0"
-            Margin="8"
             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
             Text="Activities" />
 
-        <Grid Grid.Row="1" Margin="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Button
-                Grid.Column="0"
-                Command="{Binding CreateActivityCommand}"
-                Content="Create Activity" />
+        <StackPanel
+            Grid.Row="1"
+            Margin="0,8,0,8"
+            Orientation="Horizontal">
+            <Button Command="{Binding CreateActivityCommand}" Content="Create Activity" />
             <TextBox
-                Grid.Column="1"
                 Width="100"
-                Margin="4"
+                Margin="8,8,0,8"
                 Text="{Binding ActivityName, UpdateSourceTrigger=PropertyChanged}" />
-        </Grid>
+        </StackPanel>
 
-        <materialDesign:Card
-            Grid.Row="2"
-            Margin="8"
-            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+        <materialDesign:Card Grid.Row="2" materialDesign:ShadowAssist.ShadowDepth="Depth0">
             <ListView
                 HorizontalContentAlignment="Stretch"
                 ItemsSource="{Binding Activities}"
                 SelectedItem="{Binding SelectedActivity}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel
-                            Margin="4"
-                            HorizontalAlignment="Stretch"
-                            Orientation="Horizontal">
+                        <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Command="{Binding DeleteActivityCommand}">
@@ -76,11 +64,12 @@
                             <Button
                                 VerticalAlignment="Center"
                                 Command="{Binding StartTrackingCommand}"
-                                Content="Start"
-                                Style="{StaticResource MaterialDesignOutlinedButton}" />
+                                Style="{StaticResource MaterialDesignIconButton}">
+                                <materialDesign:PackIcon Kind="Play" />
+                            </Button>
                             <TextBox
                                 MinWidth="100"
-                                Margin="4"
+                                Margin="8,4,4,4"
                                 VerticalAlignment="Center"
                                 Text="{Binding Name, Delay=500, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>

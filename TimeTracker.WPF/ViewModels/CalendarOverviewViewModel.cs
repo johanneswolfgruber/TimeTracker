@@ -243,8 +243,16 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
             return;
         }
 
+        var setting = ConfigurationManager.AppSettings["BillablePercentage"] ?? "84";
+        var factor = 0.84;
+
+        if (double.TryParse(setting, out var billablePercentage))
+        {
+            factor = billablePercentage / 100;
+        }
+
         var totalTime = _selectedTrackings.Cast<TrackingViewModel>().Select(x => x.DurationTimeSpan).Sum();
         SelectedTotalTime = totalTime.ToDurationFormatString();
-        BillableTime = (totalTime * 0.84).ToDurationFormatString();
+        BillableTime = (totalTime * factor).ToDurationFormatString();
     }
 }

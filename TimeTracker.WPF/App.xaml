@@ -13,8 +13,8 @@
                 <ui:XamlControlsResources />
                 <materialDesign:BundledTheme
                     BaseTheme="Inherit"
-                    PrimaryColor="DeepPurple"
-                    SecondaryColor="Lime" />
+                    PrimaryColor="Teal"
+                    SecondaryColor="Teal" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <!--  Other merged dictionaries here  -->
             </ResourceDictionary.MergedDictionaries>
