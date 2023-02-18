@@ -32,7 +32,9 @@ public class WPFModule : IModule
         containerRegistry.Register<IActivityService, ActivityService>();
         containerRegistry.Register<ITrackingService, TrackingService>();
         containerRegistry.Register<IExportService, ExportService>();
-        
+
+        containerRegistry.RegisterSingleton<ISettingsService, SettingsService>();
+
         containerRegistry.RegisterForNavigation<SidebarView>();
         containerRegistry.RegisterForNavigation<ActivitiesView>();
         containerRegistry.RegisterForNavigation<CalendarOverviewView>();

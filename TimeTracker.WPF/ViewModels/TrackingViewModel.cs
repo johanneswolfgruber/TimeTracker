@@ -3,7 +3,7 @@
 public class TrackingViewModel : BindableBase
 {
     private readonly IMediator _mediator;
-    private readonly Calendar _calendar;
+    private readonly System.Globalization.Calendar _calendar;
     private string _date = string.Empty;
     private string _startTime = string.Empty;
     private string? _endTime;
@@ -77,14 +77,14 @@ public class TrackingViewModel : BindableBase
         Date = $"{DateOnly.FromDateTime(tracking.StartTime.ToLocalTime()):dd\\.MM\\.yy}";
         StartTime = $"{tracking.StartTime.ToLocalTime():HH\\:mm}";
         EndTime = tracking.EndTime is null ? string.Empty : $"{tracking.EndTime.Value.ToLocalTime():HH\\:mm}";
-        Duration = tracking.Duration.ToDurationFormatString();
+        Duration = tracking.Duration.ToDurationFormatStringFull();
         DurationTimeSpan = tracking.Duration;
         RaisePropertyChanged(nameof(CalendarWeek));
     }
 
     public void UpdateDuration(TimeSpan duration)
     {
-        Duration = duration.ToDurationFormatString();
+        Duration = duration.ToDurationFormatStringFull();
         DurationTimeSpan = duration; 
     }
 

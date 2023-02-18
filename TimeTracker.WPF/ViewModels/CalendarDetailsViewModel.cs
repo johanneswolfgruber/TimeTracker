@@ -149,8 +149,8 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         _tracking = tracking;
         
         Duration = tracking.EndTime is null 
-            ? (DateTime.UtcNow - _tracking.StartTime).ToDurationFormatString()
-            : tracking.Duration.ToDurationFormatString();
+            ? (DateTime.UtcNow - _tracking.StartTime).ToDurationFormatStringFull()
+            : tracking.Duration.ToDurationFormatStringFull();
         
         if (_isUserUpdate)
         {
@@ -171,7 +171,7 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
             return;
         }
 
-        Duration = args.Duration.ToDurationFormatString();
+        Duration = args.Duration.ToDurationFormatStringFull();
     }
 
     private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

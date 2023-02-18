@@ -14,8 +14,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock
             Grid.Row="0"
@@ -26,15 +27,30 @@
             Grid.Row="1"
             Margin="0,8,0,0"
             Orientation="Horizontal">
-            <TextBlock VerticalAlignment="Center" Text="Billable percentage (%): " />
+            <TextBlock
+                MinWidth="150"
+                VerticalAlignment="Center"
+                Text="Billable percentage (%): " />
             <TextBox
                 MinWidth="100"
                 Margin="8,0,0,0"
                 Text="{Binding BillablePercentage}" />
         </StackPanel>
 
+        <StackPanel
+            Grid.Row="2"
+            Margin="0,8,0,0"
+            Orientation="Horizontal">
+            <TextBlock
+                MinWidth="150"
+                VerticalAlignment="Center"
+                Text="Show only working days:" />
+            <ToggleButton Margin="8,0,0,0" IsChecked="{Binding ShowOnlyWorkingDays}" />
+        </StackPanel>
+
         <Button
             Grid.Row="3"
+            Margin="0,8,0,8"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             Command="{Binding SaveSettingsCommand}"

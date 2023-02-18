@@ -37,7 +37,8 @@ public class ActivitiesViewModel : BindableBase
 
             var parameters = new NavigationParameters
             {
-                { "ID", _selectedActivity.Id }
+                { "ID", _selectedActivity.Id },
+                { "ActivityName", _selectedActivity.Name }
             };
             _regionManager.RequestNavigate(RegionNames.CalendarOverviewRegion, nameof(CalendarOverviewView), parameters);
         }

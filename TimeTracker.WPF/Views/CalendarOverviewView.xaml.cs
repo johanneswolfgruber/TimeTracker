@@ -19,8 +19,8 @@ public partial class CalendarOverviewView : UserControl
             return;
         }
 
-        viewModel.SelectedTrackings = dataGrid.SelectedItems.Count == 0 
-            ? null 
-            : new ReadOnlyObservableCollection<object>(new ObservableCollection<object>(dataGrid.SelectedItems.Cast<object>()));
+        //viewModel.SelectedTrackings = dataGrid.SelectedItems.Count == 0 
+        //    ? null 
+        //    : new ReadOnlyObservableCollection<object>(new ObservableCollection<object>(dataGrid.SelectedItems.Cast<object>()));
     }
 }

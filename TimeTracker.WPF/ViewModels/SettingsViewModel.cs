@@ -1,10 +1,14 @@
 ﻿namespace TimeTracker.WPF.ViewModels;
+
 public class SettingsViewModel : BindableBase, INavigationAware
 {
     private string? _billablePercentage;
+    private bool _showOnlyWorkingDays;
+    private readonly ISettingsService _settingsService;
 
-    public SettingsViewModel()
+    public SettingsViewModel(ISettingsService settingsService)
     {
+        _settingsService = settingsService;
         SaveSettingsCommand = new DelegateCommand(OnSaveSettings);
     }
 
@@ -12,6 +16,12 @@ public class SettingsViewModel : BindableBase, INavigationAware
     {
         get => _billablePercentage;
         set => SetProperty(ref _billablePercentage, value);
+    }
+
+    public bool ShowOnlyWorkingDays
+    {
+        get { return _showOnlyWorkingDays; }
+        set { _showOnlyWorkingDays = value; }
     }
 
     public DelegateCommand SaveSettingsCommand { get; }
@@ -27,7 +37,10 @@ public class SettingsViewModel : BindableBase, INavigationAware
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-        BillablePercentage = ConfigurationManager.AppSettings["BillablePercentage"] ?? "84";
+        var settings = _settingsService.GetApplicationSettings();
+
+        BillablePercentage = settings.BillablePercentage.ToString();
+        ShowOnlyWorkingDays = settings.ShowOnlyWorkingDays;
     }
     private void OnSaveSettings()
     {
@@ -36,7 +49,7 @@ public class SettingsViewModel : BindableBase, INavigationAware
             return;
         }
 
-        UpdateAppSettings("BillablePercentage", BillablePercentage!);
+        _settingsService.UpdateApplicationSettings(new ApplicationSettings(double.Parse(BillablePercentage!), ShowOnlyWorkingDays));
     }
 
     private bool ValidateSettings()
@@ -47,28 +60,5 @@ public class SettingsViewModel : BindableBase, INavigationAware
         }
 
         return true;
-    }
-
-    private static void UpdateAppSettings(string key, string value)
-    {
-        try
-        {
-            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            var settings = configFile.AppSettings.Settings;
-            if (settings[key] == null)
-            {
-                settings.Add(key, value);
-            }
-            else
-            {
-                settings[key].Value = value;
-            }
-            configFile.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-        }
-        catch (ConfigurationErrorsException)
-        {
-            Console.WriteLine("Error writing app settings");
-        }
     }
 }

@@ -14,6 +14,7 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using System.Windows;
 global using System.Windows.Data;
+global using System.Windows.Controls;
 global using Prism.Mvvm;
 global using Prism.Ioc;
 global using Prism.DryIoc;
@@ -37,5 +38,7 @@ global using TimeTracker.Contract.Notifications.Activities;
 global using TimeTracker.Contract.Notifications.Trackings;
 global using TimeTracker.WPF.Notifications;
 global using TimeTracker.WPF.Notifications.Events;
+global using TimeTracker.WPF.Services;
+
 
 

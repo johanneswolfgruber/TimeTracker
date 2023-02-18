@@ -14,7 +14,7 @@ public class TotalDurationConverter : IMultiValueConverter
             return null!;
         }
 
-        return timeSpan.ToDurationFormatString();
+        return timeSpan.ToDurationFormatStringFull();
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
