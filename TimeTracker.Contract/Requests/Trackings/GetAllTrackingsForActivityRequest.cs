@@ -1,6 +1,7 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class GetAllTrackingsForActivityRequest : IRequest<GetAllTrackingsForActivityResponse>
+public sealed class GetAllTrackingsForActivityRequest
+    : IRequest<Result<GetAllTrackingsForActivityResponse>>
 {
     public GetAllTrackingsForActivityRequest(Guid activityId)
     {

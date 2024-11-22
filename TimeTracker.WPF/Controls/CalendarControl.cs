@@ -1,8 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Windows.Input;
-using TimeTracker.WPF.ViewModels;
-
-namespace TimeTracker.WPF.Controls;
+﻿namespace TimeTracker.WPF.Controls;
 
 [TemplatePart(Name = MondayCanvas, Type = typeof(Canvas))]
 [TemplatePart(Name = TuesdayCanvas, Type = typeof(Canvas))]
@@ -143,17 +139,33 @@ public class CalendarControl : Control
         set { SetValue(CalendarItemsProperty, value); }
     }
 
-    public static readonly DependencyProperty CalendarItemsProperty =
-        DependencyProperty.Register(nameof(CalendarItems), typeof(ObservableCollection<CalendarItemViewModel>), typeof(CalendarControl), new PropertyMetadata(default(ObservableCollection<CalendarItemViewModel>), OnCalendarItemsPropertyChanged));
+    public static readonly DependencyProperty CalendarItemsProperty = DependencyProperty.Register(
+        nameof(CalendarItems),
+        typeof(ObservableCollection<CalendarItemViewModel>),
+        typeof(CalendarControl),
+        new PropertyMetadata(
+            default(ObservableCollection<CalendarItemViewModel>),
+            OnCalendarItemsPropertyChanged
+        )
+    );
 
     public ObservableCollection<CalendarItemViewModel> SelectedCalendarItems
     {
-        get { return (ObservableCollection<CalendarItemViewModel>)GetValue(SelectedCalendarItemsProperty); }
+        get
+        {
+            return (ObservableCollection<CalendarItemViewModel>)
+                GetValue(SelectedCalendarItemsProperty);
+        }
         set { SetValue(SelectedCalendarItemsProperty, value); }
     }
 
     public static readonly DependencyProperty SelectedCalendarItemsProperty =
-        DependencyProperty.Register(nameof(SelectedCalendarItems), typeof(ObservableCollection<CalendarItemViewModel>), typeof(CalendarControl), new PropertyMetadata(default(ObservableCollection<CalendarItemViewModel>)));
+        DependencyProperty.Register(
+            nameof(SelectedCalendarItems),
+            typeof(ObservableCollection<CalendarItemViewModel>),
+            typeof(CalendarControl),
+            new PropertyMetadata(default(ObservableCollection<CalendarItemViewModel>))
+        );
 
     public ICommand ExportCommand
     {
@@ -161,8 +173,12 @@ public class CalendarControl : Control
         set { SetValue(ExportCommandProperty, value); }
     }
 
-    public static readonly DependencyProperty ExportCommandProperty =
-        DependencyProperty.Register(nameof(ExportCommand), typeof(ICommand), typeof(CalendarControl), new PropertyMetadata(default(ICommand)));
+    public static readonly DependencyProperty ExportCommandProperty = DependencyProperty.Register(
+        nameof(ExportCommand),
+        typeof(ICommand),
+        typeof(CalendarControl),
+        new PropertyMetadata(default(ICommand))
+    );
 
     public double BillablePercentage
     {
@@ -171,7 +187,12 @@ public class CalendarControl : Control
     }
 
     public static readonly DependencyProperty BillablePercentageProperty =
-        DependencyProperty.Register(nameof(BillablePercentage), typeof(double), typeof(CalendarControl), new PropertyMetadata(84d));
+        DependencyProperty.Register(
+            nameof(BillablePercentage),
+            typeof(double),
+            typeof(CalendarControl),
+            new PropertyMetadata(84d)
+        );
 
     public bool ShowOnlyWorkingDays
     {
@@ -180,11 +201,19 @@ public class CalendarControl : Control
     }
 
     public static readonly DependencyProperty ShowOnlyWorkingDaysProperty =
-        DependencyProperty.Register(nameof(ShowOnlyWorkingDays), typeof(bool), typeof(CalendarControl), new PropertyMetadata(true, OnShowOnlyWorkingDaysChanged));
+        DependencyProperty.Register(
+            nameof(ShowOnlyWorkingDays),
+            typeof(bool),
+            typeof(CalendarControl),
+            new PropertyMetadata(true, OnShowOnlyWorkingDaysChanged)
+        );
 
     static CalendarControl()
     {
-        DefaultStyleKeyProperty.OverrideMetadata(typeof(CalendarControl), new FrameworkPropertyMetadata(typeof(CalendarControl)));
+        DefaultStyleKeyProperty.OverrideMetadata(
+            typeof(CalendarControl),
+            new FrameworkPropertyMetadata(typeof(CalendarControl))
+        );
     }
 
     public override void OnApplyTemplate()
@@ -196,7 +225,11 @@ public class CalendarControl : Control
         var calendar = CultureInfo.CurrentCulture.Calendar;
 
         _currentYear = DateTime.Today.Year;
-        _currentCalendarWeek = calendar.GetWeekOfYear(DateTime.Today, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        _currentCalendarWeek = calendar.GetWeekOfYear(
+            DateTime.Today,
+            CalendarWeekRule.FirstFourDayWeek,
+            DayOfWeek.Monday
+        );
         SetHeaders(FirstDateOfWeekISO8601(_currentYear, _currentCalendarWeek));
 
         RenderCalendarItems();
@@ -248,12 +281,41 @@ public class CalendarControl : Control
         _calendarWeekDaysGrid = (GetTemplateChild(CalendarWeekDaysGrid) as Grid)!;
         _calendarGrid = (GetTemplateChild(CalendarGrid) as Grid)!;
 
-        if (_mondayCanvas is null || _month is null || _calendarWeek is null || _mondayHeader is null || _tuesdayHeader is null || _wednesdayHeader is null ||
-            _thursdayHeader is null || _fridayHeader is null || _saturdayHeader is null || _sundayHeader is null || _mondayTotalTime is null || _tuesdayTotalTime is null || 
-            _wednesdayTotalTime is null || _thursdayTotalTime is null || _fridayTotalTime is null || _saturdayTotalTime is null || _sundayTotalTime is null ||
-            _mondayBillableTime is null || _tuesdayBillableTime is null || _wednesdayBillableTime is null || _thursdayBillableTime is null || _fridayBillableTime is null || 
-            _saturdayBillableTime is null || _sundayBillableTime is null || _todayButton is null || _previousWeekButton is null || _nextWeekButton is null ||
-            _exportButton is null || _weekTotalTime is null || _weekDaysScrollViewer is null || _calendarScrollViewer is null || _calendarWeekDaysGrid is null || _calendarGrid is null)
+        if (
+            _mondayCanvas is null
+            || _month is null
+            || _calendarWeek is null
+            || _mondayHeader is null
+            || _tuesdayHeader is null
+            || _wednesdayHeader is null
+            || _thursdayHeader is null
+            || _fridayHeader is null
+            || _saturdayHeader is null
+            || _sundayHeader is null
+            || _mondayTotalTime is null
+            || _tuesdayTotalTime is null
+            || _wednesdayTotalTime is null
+            || _thursdayTotalTime is null
+            || _fridayTotalTime is null
+            || _saturdayTotalTime is null
+            || _sundayTotalTime is null
+            || _mondayBillableTime is null
+            || _tuesdayBillableTime is null
+            || _wednesdayBillableTime is null
+            || _thursdayBillableTime is null
+            || _fridayBillableTime is null
+            || _saturdayBillableTime is null
+            || _sundayBillableTime is null
+            || _todayButton is null
+            || _previousWeekButton is null
+            || _nextWeekButton is null
+            || _exportButton is null
+            || _weekTotalTime is null
+            || _weekDaysScrollViewer is null
+            || _calendarScrollViewer is null
+            || _calendarWeekDaysGrid is null
+            || _calendarGrid is null
+        )
         {
             throw new InvalidOperationException("Missing template part");
         }
@@ -300,7 +362,11 @@ public class CalendarControl : Control
         var calendar = CultureInfo.CurrentCulture.Calendar;
 
         _currentYear = DateTime.Today.Year;
-        _currentCalendarWeek = calendar.GetWeekOfYear(DateTime.Today, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        _currentCalendarWeek = calendar.GetWeekOfYear(
+            DateTime.Today,
+            CalendarWeekRule.FirstFourDayWeek,
+            DayOfWeek.Monday
+        );
         SetHeaders(FirstDateOfWeekISO8601(_currentYear, _currentCalendarWeek));
         RenderCalendarItems();
     }
@@ -326,7 +392,6 @@ public class CalendarControl : Control
             _currentYear += 1;
             _currentCalendarWeek = 1;
         }
-
 
         SetHeaders(FirstDateOfWeekISO8601(_currentYear, _currentCalendarWeek));
         RenderCalendarItems();
@@ -366,7 +431,10 @@ public class CalendarControl : Control
         {
             var tracking = calendarItem.Tracking;
 
-            if (tracking.StartTime.Date < firstDateOfWeek.Date || tracking.StartTime.Date > firstDateOfWeek.AddDays(6).Date)
+            if (
+                tracking.StartTime.Date < firstDateOfWeek.Date
+                || tracking.StartTime.Date > firstDateOfWeek.AddDays(6).Date
+            )
             {
                 continue;
             }
@@ -383,7 +451,9 @@ public class CalendarControl : Control
             var billableTimeTextBlock = GetBillableTimeTextBlock(dayOfWeek);
             billableTimeTextBlock.Text = billableDuration.ToDurationFormatStringWithoutSeconds();
 
-            var calculatedHeight = (int)(calendarItem.DurationTimeSpan.TotalHours * 48) + calendarItem.DurationTimeSpan.Hours * 16;
+            var calculatedHeight =
+                (int)(calendarItem.DurationTimeSpan.TotalHours * 48)
+                + calendarItem.DurationTimeSpan.Hours * 16;
             var height = calculatedHeight < 64 ? 64 : calculatedHeight;
             var offset = (int)(tracking.StartTime.TimeOfDay.TotalHours * 64);
 
@@ -396,7 +466,7 @@ public class CalendarControl : Control
                 IsReadOnly = tracking.EndTime is not null,
                 DisplayDuration = calendarItem.DurationTimeSpan.ToDurationFormatStringFull(),
                 ActivityName = calendarItem.ActivityName,
-                StopCommand = calendarItem.StopCommand
+                StopCommand = calendarItem.StopCommand,
             };
 
             calendarItemControl.PreviewMouseDown += OnCalendarItemPreviewMouseDown;
@@ -404,7 +474,7 @@ public class CalendarControl : Control
             var binding = new Binding(nameof(CalendarItemControl.IsSelected))
             {
                 Source = calendarItem,
-                Mode = BindingMode.TwoWay
+                Mode = BindingMode.TwoWay,
             };
             calendarItemControl.SetBinding(CalendarItemControl.IsSelectedProperty, binding);
 
@@ -529,7 +599,11 @@ public class CalendarControl : Control
         // it will never be in Week 52/53
         DateTime firstThursday = jan1.AddDays(daysOffset);
         var cal = CultureInfo.CurrentCulture.Calendar;
-        int firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        int firstWeek = cal.GetWeekOfYear(
+            firstThursday,
+            CalendarWeekRule.FirstFourDayWeek,
+            DayOfWeek.Monday
+        );
 
         var weekNum = weekOfYear;
         // As we're adding days to a date in Week 1,
@@ -547,7 +621,10 @@ public class CalendarControl : Control
         return result.AddDays(-3);
     }
 
-    private static void OnShowOnlyWorkingDaysChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnShowOnlyWorkingDaysChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         if (d is not CalendarControl control)
         {
@@ -561,10 +638,22 @@ public class CalendarControl : Control
     {
         if (ShowOnlyWorkingDays)
         {
-            _calendarWeekDaysGrid.ColumnDefinitions[11].Width = new GridLength(0, GridUnitType.Pixel);
-            _calendarWeekDaysGrid.ColumnDefinitions[12].Width = new GridLength(0, GridUnitType.Pixel);
-            _calendarWeekDaysGrid.ColumnDefinitions[13].Width = new GridLength(0, GridUnitType.Pixel);
-            _calendarWeekDaysGrid.ColumnDefinitions[14].Width = new GridLength(0, GridUnitType.Pixel);
+            _calendarWeekDaysGrid.ColumnDefinitions[11].Width = new GridLength(
+                0,
+                GridUnitType.Pixel
+            );
+            _calendarWeekDaysGrid.ColumnDefinitions[12].Width = new GridLength(
+                0,
+                GridUnitType.Pixel
+            );
+            _calendarWeekDaysGrid.ColumnDefinitions[13].Width = new GridLength(
+                0,
+                GridUnitType.Pixel
+            );
+            _calendarWeekDaysGrid.ColumnDefinitions[14].Width = new GridLength(
+                0,
+                GridUnitType.Pixel
+            );
             _calendarGrid.ColumnDefinitions[11].Width = new GridLength(0, GridUnitType.Pixel);
             _calendarGrid.ColumnDefinitions[12].Width = new GridLength(0, GridUnitType.Pixel);
             _calendarGrid.ColumnDefinitions[13].Width = new GridLength(0, GridUnitType.Pixel);
@@ -572,10 +661,22 @@ public class CalendarControl : Control
         }
         else
         {
-            _calendarWeekDaysGrid.ColumnDefinitions[11].Width = new GridLength(8, GridUnitType.Pixel);
-            _calendarWeekDaysGrid.ColumnDefinitions[12].Width = new GridLength(188, GridUnitType.Pixel);
-            _calendarWeekDaysGrid.ColumnDefinitions[13].Width = new GridLength(8, GridUnitType.Pixel);
-            _calendarWeekDaysGrid.ColumnDefinitions[14].Width = new GridLength(188, GridUnitType.Pixel);
+            _calendarWeekDaysGrid.ColumnDefinitions[11].Width = new GridLength(
+                8,
+                GridUnitType.Pixel
+            );
+            _calendarWeekDaysGrid.ColumnDefinitions[12].Width = new GridLength(
+                188,
+                GridUnitType.Pixel
+            );
+            _calendarWeekDaysGrid.ColumnDefinitions[13].Width = new GridLength(
+                8,
+                GridUnitType.Pixel
+            );
+            _calendarWeekDaysGrid.ColumnDefinitions[14].Width = new GridLength(
+                188,
+                GridUnitType.Pixel
+            );
             _calendarGrid.ColumnDefinitions[11].Width = new GridLength(8, GridUnitType.Pixel);
             _calendarGrid.ColumnDefinitions[12].Width = new GridLength(188, GridUnitType.Pixel);
             _calendarGrid.ColumnDefinitions[13].Width = new GridLength(8, GridUnitType.Pixel);
@@ -583,7 +684,10 @@ public class CalendarControl : Control
         }
     }
 
-    private static void OnCalendarItemsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnCalendarItemsPropertyChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         if (d is not CalendarControl control)
         {
@@ -603,7 +707,10 @@ public class CalendarControl : Control
         control.RenderCalendarItems();
     }
 
-    private void OnCalendarItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    private void OnCalendarItemsCollectionChanged(
+        object? sender,
+        NotifyCollectionChangedEventArgs args
+    )
     {
         if (args.Action == NotifyCollectionChangedAction.Remove && args.OldItems is not null)
         {
@@ -639,7 +746,8 @@ public class CalendarControl : Control
         {
             calendarItemControl.IsSelected = !calendarItemControl.IsSelected;
             SelectedCalendarItems = new ObservableCollection<CalendarItemViewModel>(
-                _calendarItemControls.Where(x => x.IsSelected).Select(x => x.CalendarItem));
+                _calendarItemControls.Where(x => x.IsSelected).Select(x => x.CalendarItem)
+            );
             return;
         }
 
@@ -651,6 +759,7 @@ public class CalendarControl : Control
         calendarItemControl.IsSelected = true;
 
         SelectedCalendarItems = new ObservableCollection<CalendarItemViewModel>(
-            _calendarItemControls.Where(x => x.IsSelected).Select(x => x.CalendarItem));
+            _calendarItemControls.Where(x => x.IsSelected).Select(x => x.CalendarItem)
+        );
     }
 }

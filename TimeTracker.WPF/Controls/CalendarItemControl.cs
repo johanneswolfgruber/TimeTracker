@@ -1,13 +1,13 @@
-﻿using System.Windows.Input;
-using TimeTracker.WPF.ViewModels;
-
-namespace TimeTracker.WPF.Controls;
+﻿namespace TimeTracker.WPF.Controls;
 
 public class CalendarItemControl : UserControl
 {
     static CalendarItemControl()
     {
-        DefaultStyleKeyProperty.OverrideMetadata(typeof(CalendarItemControl), new FrameworkPropertyMetadata(typeof(CalendarItemControl)));
+        DefaultStyleKeyProperty.OverrideMetadata(
+            typeof(CalendarItemControl),
+            new FrameworkPropertyMetadata(typeof(CalendarItemControl))
+        );
     }
 
     public string DisplayDuration
@@ -16,8 +16,12 @@ public class CalendarItemControl : UserControl
         set { SetValue(DisplayDurationProperty, value); }
     }
 
-    public static readonly DependencyProperty DisplayDurationProperty =
-        DependencyProperty.Register(nameof(DisplayDuration), typeof(string), typeof(CalendarItemControl), new PropertyMetadata("0h 0min 0sec"));
+    public static readonly DependencyProperty DisplayDurationProperty = DependencyProperty.Register(
+        nameof(DisplayDuration),
+        typeof(string),
+        typeof(CalendarItemControl),
+        new PropertyMetadata("0h 0min 0sec")
+    );
 
     public string ActivityName
     {
@@ -25,8 +29,12 @@ public class CalendarItemControl : UserControl
         set { SetValue(ActivityNameProperty, value); }
     }
 
-    public static readonly DependencyProperty ActivityNameProperty =
-        DependencyProperty.Register(nameof(ActivityName), typeof(string), typeof(CalendarItemControl), new PropertyMetadata("ActivityName"));
+    public static readonly DependencyProperty ActivityNameProperty = DependencyProperty.Register(
+        nameof(ActivityName),
+        typeof(string),
+        typeof(CalendarItemControl),
+        new PropertyMetadata("ActivityName")
+    );
 
     public bool IsReadOnly
     {
@@ -34,8 +42,12 @@ public class CalendarItemControl : UserControl
         set { SetValue(IsReadOnlyProperty, value); }
     }
 
-    public static readonly DependencyProperty IsReadOnlyProperty =
-        DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(CalendarItemControl), new PropertyMetadata(true));
+    public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register(
+        nameof(IsReadOnly),
+        typeof(bool),
+        typeof(CalendarItemControl),
+        new PropertyMetadata(true)
+    );
 
     public ICommand StopCommand
     {
@@ -43,8 +55,12 @@ public class CalendarItemControl : UserControl
         set { SetValue(StopCommandProperty, value); }
     }
 
-    public static readonly DependencyProperty StopCommandProperty =
-        DependencyProperty.Register(nameof(StopCommand), typeof(ICommand), typeof(CalendarItemControl), new PropertyMetadata(default(ICommand)));
+    public static readonly DependencyProperty StopCommandProperty = DependencyProperty.Register(
+        nameof(StopCommand),
+        typeof(ICommand),
+        typeof(CalendarItemControl),
+        new PropertyMetadata(default(ICommand))
+    );
 
     public bool IsSelected
     {
@@ -52,8 +68,12 @@ public class CalendarItemControl : UserControl
         set { SetValue(IsSelectedProperty, value); }
     }
 
-    public static readonly DependencyProperty IsSelectedProperty =
-        DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(CalendarItemControl), new PropertyMetadata(false));
+    public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register(
+        nameof(IsSelected),
+        typeof(bool),
+        typeof(CalendarItemControl),
+        new PropertyMetadata(false)
+    );
 
     public CalendarItemViewModel CalendarItem
     {
@@ -61,6 +81,10 @@ public class CalendarItemControl : UserControl
         set { SetValue(CalendarItemProperty, value); }
     }
 
-    public static readonly DependencyProperty CalendarItemProperty =
-        DependencyProperty.Register(nameof(CalendarItem), typeof(CalendarItemViewModel), typeof(CalendarItemControl), new PropertyMetadata(default(CalendarItemViewModel)));
+    public static readonly DependencyProperty CalendarItemProperty = DependencyProperty.Register(
+        nameof(CalendarItem),
+        typeof(CalendarItemViewModel),
+        typeof(CalendarItemControl),
+        new PropertyMetadata(default(CalendarItemViewModel))
+    );
 }

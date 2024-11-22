@@ -6,10 +6,8 @@ public class ActivityConfiguration : IEntityTypeConfiguration<Activity>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.UserId)
-            .IsRequired();
+        builder.Property(x => x.UserId).IsRequired();
 
-        builder.Property(x => x.Name)
-            .IsRequired();
+        builder.Property(x => x.Name).IsRequired();
     }
 }

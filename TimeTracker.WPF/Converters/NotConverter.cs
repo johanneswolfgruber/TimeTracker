@@ -12,4 +12,3 @@ public class NotConverter : IValueConverter
         throw new NotSupportedException();
     }
 }
-

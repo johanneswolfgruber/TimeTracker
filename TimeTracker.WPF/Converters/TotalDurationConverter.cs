@@ -4,7 +4,10 @@ public class TotalDurationConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        if (values[0] is not Dictionary<string, TimeSpan> groupDurations || values[1] is not string group)
+        if (
+            values[0] is not Dictionary<string, TimeSpan> groupDurations
+            || values[1] is not string group
+        )
         {
             return null!;
         }
@@ -17,9 +20,13 @@ public class TotalDurationConverter : IMultiValueConverter
         return timeSpan.ToDurationFormatStringFull();
     }
 
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    public object[] ConvertBack(
+        object value,
+        Type[] targetTypes,
+        object parameter,
+        CultureInfo culture
+    )
     {
         throw new NotImplementedException();
     }
 }
-

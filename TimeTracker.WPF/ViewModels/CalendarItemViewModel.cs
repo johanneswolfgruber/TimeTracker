@@ -17,11 +17,10 @@ public class CalendarItemViewModel : BindableBase
         Update(tracking, activityName);
     }
 
-
     public TrackingDto Tracking { get; private set; } = default!;
 
     public DelegateCommand StopCommand { get; }
-    
+
     public DelegateCommand DeleteCommand { get; }
 
     public string ActivityName
@@ -66,4 +65,3 @@ public class CalendarItemViewModel : BindableBase
 
     private bool CanStopTracking() => Tracking.EndTime is null;
 }
-

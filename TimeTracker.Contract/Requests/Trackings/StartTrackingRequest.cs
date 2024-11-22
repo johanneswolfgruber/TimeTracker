@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class StartTrackingRequest : IRequest<StartTrackingResponse>
+public sealed class StartTrackingRequest : IRequest<Result<StartTrackingResponse>>
 {
     public StartTrackingRequest(Guid activityId)
     {

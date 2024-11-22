@@ -10,6 +10,4 @@ public class ApplicationSettingsUpdated
     public ApplicationSettings Settings { get; }
 }
 
-public class ApplicationSettingsUpdatedEvent : PubSubEvent<ApplicationSettingsUpdated>
-{
-}
+public class ApplicationSettingsUpdatedEvent : PubSubEvent<ApplicationSettingsUpdated> { }

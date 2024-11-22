@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Export;
 
-public class ExportTrackingsRequest : IRequest<ExportTrackingsResponse>
+public class ExportTrackingsRequest : IRequest<Result<ExportTrackingsResponse>>
 {
     public ExportTrackingsRequest(string filePathWithoutExtension, IEnumerable<Guid> trackings)
     {
@@ -9,10 +9,8 @@ public class ExportTrackingsRequest : IRequest<ExportTrackingsResponse>
     }
 
     public string FilePathWithoutExtension { get; }
-    
+
     public IEnumerable<Guid> Trackings { get; }
 }
 
-public class ExportTrackingsResponse
-{
-}
+public class ExportTrackingsResponse : ApiResponse { }

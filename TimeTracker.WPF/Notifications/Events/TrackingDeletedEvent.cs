@@ -1,5 +1,3 @@
 ﻿namespace TimeTracker.WPF.Notifications.Events;
 
-public class TrackingDeletedEvent : PubSubEvent<TrackingDeleted>
-{
-}
+public class TrackingDeletedEvent : PubSubEvent<TrackingDeleted> { }

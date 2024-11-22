@@ -48,7 +48,7 @@ public class ThreadingTimer : ITimer
 
     public void Dispose()
     {
-        _timer?.Dispose();        
+        _timer?.Dispose();
     }
 
     private void TimerCallback(object? state)
@@ -56,4 +56,3 @@ public class ThreadingTimer : ITimer
         Elapsed?.Invoke(this, new TimerEventArgs(state));
     }
 }
-

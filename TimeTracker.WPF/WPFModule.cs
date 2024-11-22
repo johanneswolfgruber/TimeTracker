@@ -8,8 +8,14 @@ public class WPFModule : IModule
 
         regionManager.RegisterViewWithRegion(RegionNames.SidebarRegion, nameof(SidebarView));
         regionManager.RegisterViewWithRegion(RegionNames.ActivitiesRegion, nameof(ActivitiesView));
-        regionManager.RegisterViewWithRegion(RegionNames.CalendarOverviewRegion, nameof(CalendarOverviewView));
-        regionManager.RegisterViewWithRegion(RegionNames.CalendarDetailsRegion, nameof(CalendarDetailsView));
+        regionManager.RegisterViewWithRegion(
+            RegionNames.CalendarOverviewRegion,
+            nameof(CalendarOverviewView)
+        );
+        regionManager.RegisterViewWithRegion(
+            RegionNames.CalendarDetailsRegion,
+            nameof(CalendarDetailsView)
+        );
         regionManager.RegisterViewWithRegion(RegionNames.SettingsRegion, nameof(SettingsView));
     }
 
@@ -17,15 +23,18 @@ public class WPFModule : IModule
     {
         var container = containerRegistry.GetContainer();
         container.RegisterDelegate<ServiceFactory>(r => r.Resolve);
-        container.RegisterMany(new[] 
-        { 
-            typeof(IMediator).GetAssembly(), 
-            typeof(IActivityService).GetAssembly() ,
-            typeof(NotificationHandler).GetAssembly()
-        }, Registrator.Interfaces);
-        
+        container.RegisterMany(
+            new[]
+            {
+                typeof(IMediator).GetAssembly(),
+                typeof(IActivityService).GetAssembly(),
+                typeof(NotificationHandler).GetAssembly(),
+            },
+            Registrator.Interfaces
+        );
+
         var mapper = CreateMappings();
-        
+
         containerRegistry.RegisterInstance(mapper);
         containerRegistry.Register<ITimeTrackerDbContextFactory, TimeTrackerDbContextFactory>();
         containerRegistry.Register<IDateTimeProvider, DateTimeProvider>();

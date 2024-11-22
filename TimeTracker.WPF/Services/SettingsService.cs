@@ -11,8 +11,18 @@ internal class SettingsService : ISettingsService
 
     public ApplicationSettings GetApplicationSettings()
     {
-        var billablePercentage = double.TryParse(ConfigurationManager.AppSettings["BillablePercentage"], out double billablePercentageResult) ? billablePercentageResult : 84d;
-        var showOnlyWorkingDays = bool.TryParse(ConfigurationManager.AppSettings["ShowOnlyWorkingDays"], out bool result) ? result : true;
+        var billablePercentage = double.TryParse(
+            ConfigurationManager.AppSettings["BillablePercentage"],
+            out double billablePercentageResult
+        )
+            ? billablePercentageResult
+            : 84d;
+        var showOnlyWorkingDays = bool.TryParse(
+            ConfigurationManager.AppSettings["ShowOnlyWorkingDays"],
+            out bool result
+        )
+            ? result
+            : true;
 
         return new ApplicationSettings(billablePercentage, showOnlyWorkingDays);
     }
@@ -24,7 +34,9 @@ internal class SettingsService : ISettingsService
             UpdateAppSettings(setting.Key, setting.Value);
         }
 
-        _eventAggregator.GetEvent<ApplicationSettingsUpdatedEvent>().Publish(new ApplicationSettingsUpdated(GetApplicationSettings()));
+        _eventAggregator
+            .GetEvent<ApplicationSettingsUpdatedEvent>()
+            .Publish(new ApplicationSettingsUpdated(GetApplicationSettings()));
     }
 
     private static void UpdateAppSettings(string key, string value)

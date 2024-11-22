@@ -31,9 +31,7 @@ public class SettingsViewModel : BindableBase, INavigationAware
         return true;
     }
 
-    public void OnNavigatedFrom(NavigationContext navigationContext)
-    {
-    }
+    public void OnNavigatedFrom(NavigationContext navigationContext) { }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
@@ -42,6 +40,7 @@ public class SettingsViewModel : BindableBase, INavigationAware
         BillablePercentage = settings.BillablePercentage.ToString();
         ShowOnlyWorkingDays = settings.ShowOnlyWorkingDays;
     }
+
     private void OnSaveSettings()
     {
         if (!ValidateSettings())
@@ -49,7 +48,9 @@ public class SettingsViewModel : BindableBase, INavigationAware
             return;
         }
 
-        _settingsService.UpdateApplicationSettings(new ApplicationSettings(double.Parse(BillablePercentage!), ShowOnlyWorkingDays));
+        _settingsService.UpdateApplicationSettings(
+            new ApplicationSettings(double.Parse(BillablePercentage!), ShowOnlyWorkingDays)
+        );
     }
 
     private bool ValidateSettings()
