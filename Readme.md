@@ -4,7 +4,7 @@ This was originally developed as a tool for tracking my time at work and automat
 
 ## Building/Running the Web API as a Docker Image
 
-The Web API can be built as a Docker Image using the command `docker build -t timetrackerapi .` and then started using `docker run -p 5000:8080 timetrackerapi`.
+The Web API can be built as a Docker Image using the command `docker build -t timetrackerapi .` and then started using `docker run -p 5152:8080 timetrackerapi`.
 
 ## Disclaimer
 
