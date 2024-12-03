@@ -8,7 +8,6 @@
     xmlns:local="clr-namespace:TimeTracker.WPF"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
-    ui:WindowHelper.UseModernWindowStyle="True"
     Title="Time Tracker"
     Width="1920"
     Height="1080"

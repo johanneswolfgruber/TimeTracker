@@ -25,7 +25,6 @@ global using Prism.Events;
 global using Prism.Ioc;
 global using Prism.Modularity;
 global using Prism.Mvvm;
-global using Prism.Regions;
 global using TimeTracker.Common;
 global using TimeTracker.Contract.Dtos;
 global using TimeTracker.Contract.Notifications.Activities;

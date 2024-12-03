@@ -2,6 +2,7 @@
 
 public class ActivitiesViewModel : BindableBase
 {
+    private static Guid UserId = new Guid("6BD47FD5-3AD6-49FD-9B0D-474C801DDBC6");
     private readonly IMediator _mediator;
     private readonly IRegionManager _regionManager;
     private string? _activityName;
@@ -74,8 +75,13 @@ public class ActivitiesViewModel : BindableBase
             throw new InvalidOperationException("Empty name is not allowed");
         }
 
-        var response = await _mediator.Send(new CreateActivityRequest(ActivityName));
-        Activities.Add(Create(response.Activity));
+        var response = await _mediator.Send(new CreateActivityRequest(ActivityName, UserId));
+        if (response.Failure)
+        {
+            return;
+        }
+        
+        Activities.Add(Create(response.Value.Activity));
     }
 
     private bool CanCreateActivity() => !string.IsNullOrEmpty(ActivityName);
@@ -83,8 +89,13 @@ public class ActivitiesViewModel : BindableBase
     private async Task Initialize()
     {
         Activities.Clear();
-        var response = await _mediator.Send(new GetAllActivitiesRequest());
-        Activities.AddRange(response.Activities.Select(Create));
+        var response = await _mediator.Send(new GetAllActivitiesRequest(UserId));
+        if (response.Failure)
+        {
+            return;
+        }
+        
+        Activities.AddRange(response.Value.Activities.Select(Create));
         SelectedActivity = Activities.FirstOrDefault();
     }
 

@@ -22,7 +22,7 @@ public class WPFModule : IModule
     public void RegisterTypes(IContainerRegistry containerRegistry)
     {
         var container = containerRegistry.GetContainer();
-        container.RegisterDelegate<ServiceFactory>(r => r.Resolve);
+        // container.RegisterDelegate<ServiceFactory>(r => r.Resolve); // TODO: check if needed
         container.RegisterMany(
             new[]
             {

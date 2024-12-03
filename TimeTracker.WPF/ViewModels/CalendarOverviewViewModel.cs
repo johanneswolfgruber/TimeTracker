@@ -193,7 +193,12 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
         var response = await _mediator.Send(
             new GetAllTrackingsForActivityRequest(_activityId.Value)
         );
-        foreach (var tracking in response.Trackings)
+        if (response.Failure)
+        {
+            return;
+        }
+        
+        foreach (var tracking in response.Value.Trackings)
         {
             AddOrUpdate(tracking);
         }
@@ -285,7 +290,7 @@ public class CalendarOverviewViewModel : BindableBase, INavigationAware
     private void StartTimer()
     {
         _timerDisposable = Observable
-            .Interval(TimeSpan.FromSeconds(1), DispatcherScheduler.Current)
+            .Interval(TimeSpan.FromSeconds(1)) // TODO: check how to run on dispatcher
             .StartWith(-1)
             .Subscribe(OnTimerTick);
     }

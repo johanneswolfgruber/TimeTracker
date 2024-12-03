@@ -105,12 +105,12 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         }
 
         var response = await _mediator.Send(new GetTrackingRequest(trackingId.Value));
-        if (response.Tracking is null)
+        if (response.Failure)
         {
             return;
         }
 
-        Update(response.Tracking);
+        Update(response.Value.Tracking);
     }
 
     private void OnTrackingCreatedOrUpdated(TrackingCreatedOrUpdated notification)
@@ -213,7 +213,12 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         var response = await _mediator.Send(
             new UpdateTrackingStartTimeRequest(_tracking.Id, newStartTime)
         );
-        Update(response.Tracking);
+        if (response.Failure)
+        {
+            return;
+        }
+        
+        Update(response.Value.Tracking);
         _isUserUpdate = false;
     }
 
@@ -229,7 +234,12 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         var response = await _mediator.Send(
             new UpdateTrackingEndTimeRequest(_tracking.Id, newEndTime)
         );
-        Update(response.Tracking);
+        if (response.Failure)
+        {
+            return;
+        }
+        
+        Update(response.Value.Tracking);
         _isUserUpdate = false;
     }
 
@@ -242,7 +252,12 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
 
         _isUserUpdate = true;
         var response = await _mediator.Send(new UpdateTrackingNotesRequest(_tracking.Id, Notes));
-        Update(response.Tracking);
+        if (response.Failure)
+        {
+            return;
+        }
+        
+        Update(response.Value.Tracking);
         _isUserUpdate = false;
     }
 }
