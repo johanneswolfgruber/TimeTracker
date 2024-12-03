@@ -3,7 +3,7 @@
 public class TrackingViewModel : BindableBase
 {
     private readonly IMediator _mediator;
-    private readonly Calendar _calendar;
+    private readonly System.Globalization.Calendar _calendar;
     private string _date = string.Empty;
     private string _startTime = string.Empty;
     private string? _endTime;
@@ -16,17 +16,19 @@ public class TrackingViewModel : BindableBase
         _mediator = mediator;
         _calendar = CultureInfo.CurrentCulture.Calendar;
 
-        StopTrackingCommand = new DelegateCommand(async () => await OnStopTrackingAsync(), CanStopTracking);
+        StopTrackingCommand = new DelegateCommand(
+            async () => await OnStopTrackingAsync(),
+            CanStopTracking
+        );
         DeleteTrackingCommand = new DelegateCommand(async () => await OnDeleteTrackingAsync());
 
         Update(tracking);
     }
 
-
     public TrackingDto Tracking { get; private set; } = default!;
 
     public DelegateCommand StopTrackingCommand { get; }
-    
+
     public DelegateCommand DeleteTrackingCommand { get; }
 
     public bool IsExpanded
@@ -69,23 +71,26 @@ public class TrackingViewModel : BindableBase
         set => SetProperty(ref _durationTimeSpan, value);
     }
 
-    public string CalendarWeek => $"KW{_calendar.GetWeekOfYear(Tracking.StartTime.ToLocalTime(), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)}";
+    public string CalendarWeek =>
+        $"KW{_calendar.GetWeekOfYear(Tracking.StartTime.ToLocalTime(), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)}";
 
     public void Update(TrackingDto tracking)
     {
         Tracking = tracking;
         Date = $"{DateOnly.FromDateTime(tracking.StartTime.ToLocalTime()):dd\\.MM\\.yy}";
         StartTime = $"{tracking.StartTime.ToLocalTime():HH\\:mm}";
-        EndTime = tracking.EndTime is null ? string.Empty : $"{tracking.EndTime.Value.ToLocalTime():HH\\:mm}";
-        Duration = tracking.Duration.ToDurationFormatString();
+        EndTime = tracking.EndTime is null
+            ? string.Empty
+            : $"{tracking.EndTime.Value.ToLocalTime():HH\\:mm}";
+        Duration = tracking.Duration.ToDurationFormatStringFull();
         DurationTimeSpan = tracking.Duration;
         RaisePropertyChanged(nameof(CalendarWeek));
     }
 
     public void UpdateDuration(TimeSpan duration)
     {
-        Duration = duration.ToDurationFormatString();
-        DurationTimeSpan = duration; 
+        Duration = duration.ToDurationFormatStringFull();
+        DurationTimeSpan = duration;
     }
 
     private async Task OnStopTrackingAsync()
@@ -100,4 +105,3 @@ public class TrackingViewModel : BindableBase
 
     private bool CanStopTracking() => string.IsNullOrEmpty(EndTime);
 }
-

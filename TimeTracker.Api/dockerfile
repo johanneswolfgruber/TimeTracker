@@ -1,0 +1,34 @@
+# Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /app
+
+# Copy only the TimeTracker.API.csproj and dependency projects
+COPY ../TimeTracker.Api/TimeTracker.API.csproj ./TimeTracker.Api/
+COPY ../TimeTracker.Contract/TimeTracker.Contract.csproj ./TimeTracker.Contract/
+COPY ../TimeTracker.Domain/TimeTracker.Domain.csproj ./TimeTracker.Domain/
+COPY ../TimeTracker.Persistence/TimeTracker.Persistence.csproj ./TimeTracker.Persistence/
+COPY ../TimeTracker.Common/TimeTracker.Common.csproj ./TimeTracker.Common/
+
+# Restore dependencies
+RUN dotnet restore ./TimeTracker.Api/TimeTracker.API.csproj
+
+# Copy the full source code for all projects
+COPY ../TimeTracker.Api ./TimeTracker.Api
+COPY ../TimeTracker.Contract ./TimeTracker.Contract
+COPY ../TimeTracker.Domain ./TimeTracker.Domain
+COPY ../TimeTracker.Persistence ./TimeTracker.Persistence
+COPY ../TimeTracker.Common ./TimeTracker.Common
+
+# Build and publish the application
+RUN dotnet publish ./TimeTracker.Api/TimeTracker.API.csproj -c Release -o /app/out
+
+# Runtime Stage
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+WORKDIR /app
+
+# Copy the build output from the build stage
+COPY --from=build /app/out ./
+
+# Expose port and set the entry point
+EXPOSE 80
+ENTRYPOINT ["dotnet", "TimeTracker.API.dll"]

@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Activities;
 
-public sealed class GetActivityRequest : IRequest<GetActivityResponse>
+public sealed class GetActivityRequest : IRequest<Result<GetActivityResponse>>
 {
     public GetActivityRequest(Guid activityId)
     {
@@ -10,12 +10,12 @@ public sealed class GetActivityRequest : IRequest<GetActivityResponse>
     public Guid ActivityId { get; }
 }
 
-public sealed class GetActivityResponse
+public sealed class GetActivityResponse : ApiResponse
 {
-    public GetActivityResponse(ActivityDto? activity)
+    public GetActivityResponse(ActivityDto activity)
     {
         Activity = activity;
     }
 
-    public ActivityDto? Activity { get; }
+    public ActivityDto Activity { get; }
 }

@@ -7,14 +7,23 @@ public class ActivitiesViewModel : BindableBase
     private string? _activityName;
     private ActivityViewModel? _selectedActivity;
 
-    public ActivitiesViewModel(IMediator mediator, IRegionManager regionManager, IEventAggregator eventAggregator)
+    public ActivitiesViewModel(
+        IMediator mediator,
+        IRegionManager regionManager,
+        IEventAggregator eventAggregator
+    )
     {
         _mediator = mediator;
         _regionManager = regionManager;
 
-        CreateActivityCommand = new DelegateCommand(async () => await OnCreateActivityAsync(), CanCreateActivity);
+        CreateActivityCommand = new DelegateCommand(
+            async () => await OnCreateActivityAsync(),
+            CanCreateActivity
+        );
 
-        eventAggregator.GetEvent<ActivityCreatedOrUpdatedEvent>().Subscribe(OnActivityCreatedOrUpdated);
+        eventAggregator
+            .GetEvent<ActivityCreatedOrUpdatedEvent>()
+            .Subscribe(OnActivityCreatedOrUpdated);
         eventAggregator.GetEvent<ActivityDeletedEvent>().Subscribe(OnActivityDeleted);
         Initialize().Wait();
     }
@@ -23,13 +32,13 @@ public class ActivitiesViewModel : BindableBase
 
     public ObservableCollection<ActivityViewModel> Activities { get; } = new();
 
-    public ActivityViewModel? SelectedActivity 
-    { 
-        get => _selectedActivity; 
+    public ActivityViewModel? SelectedActivity
+    {
+        get => _selectedActivity;
         set
         {
             SetProperty(ref _selectedActivity, value);
-            
+
             if (_selectedActivity is null)
             {
                 return;
@@ -37,9 +46,14 @@ public class ActivitiesViewModel : BindableBase
 
             var parameters = new NavigationParameters
             {
-                { "ID", _selectedActivity.Id }
+                { "ID", _selectedActivity.Id },
+                { "ActivityName", _selectedActivity.Name },
             };
-            _regionManager.RequestNavigate(RegionNames.CalendarOverviewRegion, nameof(CalendarOverviewView), parameters);
+            _regionManager.RequestNavigate(
+                RegionNames.CalendarOverviewRegion,
+                nameof(CalendarOverviewView),
+                parameters
+            );
         }
     }
 
@@ -79,9 +93,7 @@ public class ActivitiesViewModel : BindableBase
         return new ActivityViewModel(_mediator, activity);
     }
 
-    private void OnActivityCreatedOrUpdated(ActivityCreatedOrUpdated notification)
-    {
-    }
+    private void OnActivityCreatedOrUpdated(ActivityCreatedOrUpdated notification) { }
 
     private void OnActivityDeleted(ActivityDeleted notification)
     {
@@ -90,7 +102,7 @@ public class ActivitiesViewModel : BindableBase
         {
             return;
         }
-        
+
         Activities.Remove(activityToRemove);
         SelectedActivity = Activities.FirstOrDefault();
     }

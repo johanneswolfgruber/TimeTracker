@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:controls="clr-namespace:TimeTracker.WPF.Controls"
     xmlns:converters="clr-namespace:TimeTracker.WPF.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -41,7 +42,13 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
+        <controls:CalendarControl
+            BillablePercentage="{Binding BillablePercentage}"
+            CalendarItems="{Binding CalendarItems}"
+            ExportCommand="{Binding ExportSelectedTrackingsCommand}"
+            SelectedCalendarItems="{Binding SelectedCalendarItems, Mode=TwoWay}"
+            ShowOnlyWorkingDays="{Binding ShowOnlyWorkingDays}" />
+        <!--<Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -258,6 +265,6 @@
                 CommandParameter="{Binding SelectedTrackings}"
                 Content="Export Selected Trackings"
                 Style="{StaticResource MaterialDesignOutlinedButton}" />
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

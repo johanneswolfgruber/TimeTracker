@@ -1,5 +1,3 @@
 ﻿namespace TimeTracker.WPF.Notifications.Events;
 
-public class ActivityDeletedEvent : PubSubEvent<ActivityDeleted>
-{
-}
+public class ActivityDeletedEvent : PubSubEvent<ActivityDeleted> { }

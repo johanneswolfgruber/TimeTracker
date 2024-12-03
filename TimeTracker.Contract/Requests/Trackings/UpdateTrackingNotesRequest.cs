@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class UpdateTrackingNotesRequest : IRequest<UpdateTrackingNotesResponse>
+public sealed class UpdateTrackingNotesRequest : IRequest<Result<UpdateTrackingNotesResponse>>
 {
     public UpdateTrackingNotesRequest(Guid trackingId, string notes)
     {

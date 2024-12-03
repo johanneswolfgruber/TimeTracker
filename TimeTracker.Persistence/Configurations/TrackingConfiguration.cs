@@ -6,12 +6,9 @@ public class TrackingConfiguration : IEntityTypeConfiguration<Tracking>
     {
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.Activity)
-            .WithMany(x => x.Trackings)
-            .HasForeignKey(x => x.ActivityId);
+        builder.HasOne(x => x.Activity).WithMany(x => x.Trackings).HasForeignKey(x => x.ActivityId);
 
-        builder.Property(x => x.StartTime)
-            .IsRequired();
+        builder.Property(x => x.StartTime).IsRequired();
 
         builder.Property(x => x.EndTime);
 

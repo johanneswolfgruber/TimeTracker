@@ -1,26 +1,25 @@
 ﻿namespace TimeTracker.Contract.Dtos;
 
-public class TrackingDto
+public class TrackingDto(
+    Guid id,
+    string notes,
+    DateTime startTime,
+    DateTime? endTime,
+    TimeSpan duration,
+    Guid activityId
+)
 {
-    public TrackingDto(Guid id, string notes, DateTime startTime, DateTime? endTime, TimeSpan duration, Guid activityId)
-    {
-        Id = id;
-        Notes = notes;
-        StartTime = startTime;
-        EndTime = endTime;
-        Duration = duration;
-        ActivityId = activityId;
-    }
+    public Guid Id { get; init; } = id;
 
-    public Guid Id { get; }
+    public string Notes { get; init; } = notes;
 
-    public string Notes { get; }
+    [JsonConverter(typeof(DateTimeConverter))]
+    public DateTime StartTime { get; init; } = startTime;
 
-    public DateTime StartTime { get; }
+    [JsonConverter(typeof(DateTimeConverter))]
+    public DateTime? EndTime { get; init; } = endTime;
 
-    public DateTime? EndTime { get; }
+    public TimeSpan Duration { get; init; } = duration;
 
-    public TimeSpan Duration { get; }
-
-    public Guid ActivityId { get; }
+    public Guid ActivityId { get; init; } = activityId;
 }

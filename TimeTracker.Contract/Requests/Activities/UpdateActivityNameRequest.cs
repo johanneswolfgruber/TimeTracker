@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Activities;
 
-public sealed class UpdateActivityNameRequest : IRequest<UpdateActivityNameResponse>
+public sealed class UpdateActivityNameRequest : IRequest<Result<UpdateActivityNameResponse>>
 {
     public UpdateActivityNameRequest(Guid activityId, string name)
     {
@@ -12,7 +12,7 @@ public sealed class UpdateActivityNameRequest : IRequest<UpdateActivityNameRespo
     public string Name { get; }
 }
 
-public sealed class UpdateActivityNameResponse
+public sealed class UpdateActivityNameResponse : ApiResponse
 {
     public UpdateActivityNameResponse(ActivityDto activity)
     {

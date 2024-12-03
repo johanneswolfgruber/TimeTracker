@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class GetTrackingRequest : IRequest<GetTrackingResponse>
+public sealed class GetTrackingRequest : IRequest<Result<GetTrackingResponse>>
 {
     public GetTrackingRequest(Guid trackingId)
     {
@@ -10,12 +10,12 @@ public sealed class GetTrackingRequest : IRequest<GetTrackingResponse>
     public Guid TrackingId { get; }
 }
 
-public sealed class GetTrackingResponse
+public sealed class GetTrackingResponse : ApiResponse
 {
-    public GetTrackingResponse(TrackingDto? tracking)
+    public GetTrackingResponse(TrackingDto tracking)
     {
         Tracking = tracking;
     }
 
-    public TrackingDto? Tracking { get; }
+    public TrackingDto Tracking { get; }
 }

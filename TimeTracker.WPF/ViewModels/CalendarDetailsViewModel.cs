@@ -17,12 +17,15 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     {
         _mediator = mediator;
         _eventAggregator = eventAggregator;
-        
-        StopTrackingCommand = new DelegateCommand(async () => await OnStopTrackingAsync(), CanStopTracking);
+
+        StopTrackingCommand = new DelegateCommand(
+            async () => await OnStopTrackingAsync(),
+            CanStopTracking
+        );
     }
-    
+
     public DelegateCommand StopTrackingCommand { get; }
-    
+
     public DateTime? StartDate
     {
         get => _startDate;
@@ -65,12 +68,14 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-        _eventAggregator.GetEvent<TrackingCreatedOrUpdatedEvent>().Subscribe(OnTrackingCreatedOrUpdated);
+        _eventAggregator
+            .GetEvent<TrackingCreatedOrUpdatedEvent>()
+            .Subscribe(OnTrackingCreatedOrUpdated);
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Subscribe(OnTrackingDeleted);
         _eventAggregator.GetEvent<DurationUpdatedEvent>().Subscribe(OnDurationUpdated);
-        
+
         var trackingId = navigationContext.Parameters.GetValue<Guid>("ID");
-        
+
         Initialize(trackingId).Wait();
 
         PropertyChanged += OnPropertyChanged;
@@ -83,10 +88,12 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
-        _eventAggregator.GetEvent<TrackingCreatedOrUpdatedEvent>().Unsubscribe(OnTrackingCreatedOrUpdated);
+        _eventAggregator
+            .GetEvent<TrackingCreatedOrUpdatedEvent>()
+            .Unsubscribe(OnTrackingCreatedOrUpdated);
         _eventAggregator.GetEvent<TrackingDeletedEvent>().Unsubscribe(OnTrackingDeleted);
         _eventAggregator.GetEvent<DurationUpdatedEvent>().Unsubscribe(OnDurationUpdated);
-        
+
         PropertyChanged -= OnPropertyChanged;
     }
 
@@ -138,7 +145,7 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
         {
             return;
         }
-        
+
         await _mediator.Send(new StopTrackingRequest(_tracking.Id));
     }
 
@@ -147,11 +154,11 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
     private void Update(TrackingDto tracking)
     {
         _tracking = tracking;
-        
-        Duration = tracking.EndTime is null 
-            ? (DateTime.UtcNow - _tracking.StartTime).ToDurationFormatString()
-            : tracking.Duration.ToDurationFormatString();
-        
+
+        Duration = tracking.EndTime is null
+            ? (DateTime.UtcNow - _tracking.StartTime).ToDurationFormatStringFull()
+            : tracking.Duration.ToDurationFormatStringFull();
+
         if (_isUserUpdate)
         {
             return;
@@ -171,7 +178,7 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
             return;
         }
 
-        Duration = args.Duration.ToDurationFormatString();
+        Duration = args.Duration.ToDurationFormatStringFull();
     }
 
     private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -203,7 +210,9 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
 
         _isUserUpdate = true;
         var newStartTime = StartDate.Value.Date + StartTime.Value.TimeOfDay;
-        var response = await _mediator.Send(new UpdateTrackingStartTimeRequest(_tracking.Id, newStartTime));
+        var response = await _mediator.Send(
+            new UpdateTrackingStartTimeRequest(_tracking.Id, newStartTime)
+        );
         Update(response.Tracking);
         _isUserUpdate = false;
     }
@@ -217,7 +226,9 @@ public class CalendarDetailsViewModel : BindableBase, INavigationAware
 
         _isUserUpdate = true;
         var newEndTime = EndDate.Value.Date + EndTime.Value.TimeOfDay;
-        var response = await _mediator.Send(new UpdateTrackingEndTimeRequest(_tracking.Id, newEndTime));
+        var response = await _mediator.Send(
+            new UpdateTrackingEndTimeRequest(_tracking.Id, newEndTime)
+        );
         Update(response.Tracking);
         _isUserUpdate = false;
     }

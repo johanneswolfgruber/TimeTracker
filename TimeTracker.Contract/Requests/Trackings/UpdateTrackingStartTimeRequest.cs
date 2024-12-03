@@ -1,6 +1,7 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class UpdateTrackingStartTimeRequest : IRequest<UpdateTrackingStartTimeResponse>
+public sealed class UpdateTrackingStartTimeRequest
+    : IRequest<Result<UpdateTrackingStartTimeResponse>>
 {
     public UpdateTrackingStartTimeRequest(Guid trackingId, DateTime startTime)
     {

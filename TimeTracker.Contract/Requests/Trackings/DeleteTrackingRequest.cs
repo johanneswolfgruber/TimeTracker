@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class DeleteTrackingRequest : IRequest<DeleteTrackingResponse>
+public sealed class DeleteTrackingRequest : IRequest<Result<DeleteTrackingResponse>>
 {
     public DeleteTrackingRequest(Guid trackingId)
     {
@@ -10,7 +10,7 @@ public sealed class DeleteTrackingRequest : IRequest<DeleteTrackingResponse>
     public Guid TrackingId { get; }
 }
 
-public sealed class DeleteTrackingResponse
+public sealed class DeleteTrackingResponse : ApiResponse
 {
     public DeleteTrackingResponse(bool wasDeleted)
     {

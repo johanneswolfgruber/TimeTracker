@@ -9,10 +9,8 @@ public class DurationUpdated
     }
 
     public Guid TrackingId { get; }
-    
+
     public TimeSpan Duration { get; }
 }
 
-public class DurationUpdatedEvent : PubSubEvent<DurationUpdated>
-{
-}
+public class DurationUpdatedEvent : PubSubEvent<DurationUpdated> { }

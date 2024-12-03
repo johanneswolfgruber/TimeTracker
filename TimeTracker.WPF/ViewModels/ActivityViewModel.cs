@@ -24,8 +24,8 @@ public class ActivityViewModel : BindableBase
 
     public DelegateCommand DeleteActivityCommand { get; }
 
-    public string Name 
-    { 
+    public string Name
+    {
         get => _name;
         set => SetProperty(ref _name, value);
     }

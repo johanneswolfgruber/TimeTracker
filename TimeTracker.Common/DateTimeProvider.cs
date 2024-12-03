@@ -13,5 +13,3 @@ public sealed class DateTimeProvider : IDateTimeProvider
 
     public DateTime LocalNow => DateTime.Now;
 }
-
-

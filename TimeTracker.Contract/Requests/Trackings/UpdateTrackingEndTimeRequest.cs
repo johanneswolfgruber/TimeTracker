@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class UpdateTrackingEndTimeRequest : IRequest<UpdateTrackingEndTimeResponse>
+public sealed class UpdateTrackingEndTimeRequest : IRequest<Result<UpdateTrackingEndTimeResponse>>
 {
     public UpdateTrackingEndTimeRequest(Guid trackingId, DateTime endTime)
     {

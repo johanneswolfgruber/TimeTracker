@@ -1,10 +1,10 @@
 ﻿namespace TimeTracker.WPF.Notifications;
 
-public class NotificationHandler :
-    INotificationHandler<ActivityCreatedOrUpdated>,
-    INotificationHandler<ActivityDeleted>,
-    INotificationHandler<TrackingCreatedOrUpdated>,
-    INotificationHandler<TrackingDeleted>
+public class NotificationHandler
+    : INotificationHandler<ActivityCreatedOrUpdated>,
+        INotificationHandler<ActivityDeleted>,
+        INotificationHandler<TrackingCreatedOrUpdated>,
+        INotificationHandler<TrackingDeleted>
 {
     private readonly IEventAggregator _eventAggregator;
 

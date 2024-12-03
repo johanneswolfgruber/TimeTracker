@@ -1,6 +1,6 @@
 ﻿namespace TimeTracker.Contract.Requests.Trackings;
 
-public sealed class StopTrackingRequest : IRequest<StopTrackingResponse>
+public sealed class StopTrackingRequest : IRequest<Result<StopTrackingResponse>>
 {
     public StopTrackingRequest(Guid trackingId)
     {

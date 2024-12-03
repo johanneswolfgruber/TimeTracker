@@ -12,4 +12,3 @@ public class CollapsedWhenFalseConverter : IValueConverter
         return value is Visibility visibility && visibility == Visibility.Visible;
     }
 }
-
