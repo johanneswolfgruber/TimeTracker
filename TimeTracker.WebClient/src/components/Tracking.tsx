@@ -93,10 +93,11 @@ export const Tracking = ({ tracking }: TrackingProps) => {
               initialFormData={{
                 startTime: tracking.startTime,
                 endTime: tracking.endTime,
-                duration:
-                  globalState?.runningDurations.getRunningDuration(
-                    tracking.id,
-                  ) || new TimeSpan(),
+                duration: tracking.endTime
+                  ? TimeSpan.parse(tracking.duration)
+                  : globalState?.runningDurations.getRunningDuration(
+                      tracking.id,
+                    ) || new TimeSpan(),
                 notes: tracking.notes,
               }}
             />

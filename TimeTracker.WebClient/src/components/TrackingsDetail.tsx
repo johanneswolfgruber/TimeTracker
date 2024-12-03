@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ITrackingFormData } from "../lib/types";
 import { ModalDialog } from "./ModalDialog";
 import { FormButton } from "./Buttons";
@@ -16,55 +16,72 @@ export const TrackingsDetail = ({
   onSubmit,
   onClose,
 }: TrackingsDetailProps) => {
-  const [date, setDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [notes, setNotes] = useState("");
+  const [formData, setFormData] = useState(initialFormData);
+  const dateRef = useRef<HTMLInputElement | null>(null);
+  const startTimeRef = useRef<HTMLInputElement | null>(null);
+  const endTimeRef = useRef<HTMLInputElement | null>(null);
+  const notesRef = useRef<HTMLTextAreaElement | null>(null);
+  const [duration, setDuration] = useState(initialFormData.duration);
 
   useEffect(() => {
-    setDate(
-      new Intl.DateTimeFormat("en-CA", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).format(new Date(initialFormData.startTime)),
-    );
-    setStartTime(new Date(initialFormData.startTime).toLocaleTimeString());
-    setEndTime(
-      initialFormData.endTime
-        ? new Date(initialFormData.endTime).toLocaleTimeString()
-        : "",
-    );
-    setNotes(initialFormData.notes || "");
-  }, [initialFormData]);
+    setDuration(initialFormData.duration);
+  }, [initialFormData.duration]);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(event.target.value);
+    const { value } = event.target;
+
+    setFormData((prevFormData) => {
+      const startTimeElement = startTimeRef.current;
+      const endTimeElement = endTimeRef.current;
+      if (!startTimeElement || !endTimeElement) {
+        return prevFormData;
+      }
+
+      const startTime = new Date(`${value}T${startTimeElement.value}`);
+      console.log(startTime);
+      const endTime = new Date(`${value}T${endTimeElement.value}`);
+      console.log(endTime);
+
+      return {
+        ...prevFormData,
+        startTime,
+        endTime,
+      };
+    });
   };
 
   const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
-    if (name === "startTime") {
-      setStartTime(value);
-    } else if (name === "endTime") {
-      setEndTime(value);
-    }
+    setFormData((prevFormData) => {
+      const dateRefElement = dateRef.current;
+      if (!dateRefElement) {
+        return prevFormData;
+      }
+
+      const time = new Date(`${dateRefElement.value}T${value}`);
+      console.log(time);
+
+      return {
+        ...prevFormData,
+        [name]: time,
+      };
+    });
   };
 
   const handleNotesChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNotes(event.target.value);
+    const { value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      notes: value,
+    }));
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = {
-      startTime: new Date(`${date}T${startTime}`),
-      endTime: !endTime ? undefined : new Date(`${date}T${endTime}`),
-      duration: initialFormData.duration,
-      notes,
-    };
-    onSubmit(formData);
+    if (formData) {
+      onSubmit(formData);
+    }
   };
 
   return (
@@ -77,7 +94,12 @@ export const TrackingsDetail = ({
               <label htmlFor="date">Date</label>
               <input
                 className="w-full bg-transparent text-text outline-none border-b border-text"
-                value={date}
+                ref={dateRef}
+                value={new Intl.DateTimeFormat("en-CA", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                }).format(new Date(formData.startTime))}
                 onChange={handleDateChange}
                 type="date"
                 name="date"
@@ -88,7 +110,7 @@ export const TrackingsDetail = ({
               <label htmlFor="duration">Duration</label>
               <input
                 className="w-full bg-transparent text-text outline-none"
-                value={initialFormData?.duration.toString()}
+                value={duration.toString()}
                 type="text"
                 name="duration"
                 id="duration"
@@ -101,7 +123,8 @@ export const TrackingsDetail = ({
               <label htmlFor="startTime">Start Time</label>
               <input
                 className="w-full bg-transparent text-text outline-none"
-                value={startTime}
+                ref={startTimeRef}
+                value={new Date(formData.startTime).toLocaleTimeString()}
                 onChange={handleTimeChange}
                 type="time"
                 step="1"
@@ -113,8 +136,13 @@ export const TrackingsDetail = ({
               <label htmlFor="endTime">End Time</label>
               <input
                 className="w-full bg-transparent text-text outline-none"
-                value={endTime}
                 onChange={handleTimeChange}
+                ref={endTimeRef}
+                value={
+                  formData.endTime
+                    ? new Date(formData.endTime).toLocaleTimeString()
+                    : ""
+                }
                 type="time"
                 step="1"
                 name="endTime"
@@ -126,8 +154,9 @@ export const TrackingsDetail = ({
             <label htmlFor="notes">Notes</label>
             <textarea
               className="w-full p-2 bg-transparent text-text outline-none border-text border-2 rounded-lg max-h-32 min-h-12"
-              value={notes}
               onChange={handleNotesChange}
+              ref={notesRef}
+              value={formData.notes}
               name="notes"
               id="notes"
               placeholder="Notes"
